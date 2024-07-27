@@ -7,27 +7,17 @@ module.exports = {
     theme: {
       extend: {
         colors: {
-          primary: '#6200ea',
-          secondary: '#00c853',
-          'gray-light': '#f4f4f4',
-          'gray-dark': '#333',
+          'primary': '#1a5f7a',
+          'secondary': '#159895',
+          'accent': '#57c5b6',
+          'background': '#e2f6ff',
+          'text': '#002B5B',
         },
-        fontFamily: {
-          sans: ['Arial', 'sans-serif'],
+        gradientColorStops: {
+          'gradient-1': '#1a5f7a',
+          'gradient-2': '#159895',
+          'gradient-3': '#57c5b6',
         },
-        typography: (theme) => ({
-          DEFAULT: {
-            css: {
-              color: theme('colors.gray-dark'),
-              a: {
-                color: theme('colors.primary'),
-                '&:hover': {
-                  color: theme('colors.secondary'),
-                },
-              },
-            },
-          },
-        }),
       },
     },
     plugins: [

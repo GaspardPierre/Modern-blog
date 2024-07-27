@@ -7,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import MDXComponents from '@/components/MDXComponents'
+import dynamic from 'next/dynamic';
+const MDXRemote = dynamic(() => import('next-mdx-remote/rsc'));
+const MDXComponents = dynamic(() => import('@/components/MDXComponents'));
 
 export default function NewPost() {
   const [title, setTitle] = useState('')
@@ -19,7 +20,7 @@ export default function NewPost() {
     const postData = {
       title,
       content,
-      authorId: 1, // Replace with actual author ID
+      authorId: 1,
       published: true,
     }
 

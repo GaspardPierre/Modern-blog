@@ -1,58 +1,65 @@
-// app/page.tsx
-import Image from 'next/image';
-import Link from 'next/link';
+import Link from 'next/link'
+import Image from 'next/image'
+import { MDXRemote } from 'next-mdx-remote/rsc'
+import { getAllPosts } from '@/lib/posts'
+import MDXComponents from '@/components/MDXComponents'
 
-export default function Home() {
+export default async function HomePage() {
+  const posts = await getAllPosts(5) // Récupère les 10 derniers posts
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div className="lg:col-span-2">
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <Image
-            src="https://dummyimage.com/1200x600/ddd/000.png&text=Featured+Article"
-            alt="Featured Article"
-            width={1200}
-            height={600}
-            className="rounded-lg mb-4"
-          />
-          <h2 className="text-2xl font-bold mb-2">Investment Opportunities in Emerging Markets</h2>
-          <p className="text-gray-600">Discover the potential for growth in developing economies and how to navigate the risks.</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white rounded-lg shadow-md p-4">
-              <span className="inline-block bg-primary text-white text-xs px-2 py-1 rounded mb-2">FEATURED</span>
-              <Image
-                src={`https://dummyimage.com/400x300/ddd/000.png&text=Article+${i}`}
-                alt={`Article ${i}`}
-                width={400}
-                height={300}
-                className="rounded-lg mb-2"
-              />
-              <h3 className="text-lg font-semibold mb-1">Tech Stocks to Watch in 2024</h3>
-              <p className="text-gray-500 text-sm">July 5, 2024</p>
-            </div>
+    <>
+      <div className="md:w-3/4">
+        <h1 className="text-4xl font-bold mb-4">The Hotjar blog</h1>
+        <p className="text-gray-600 mb-6">Content for UX, product, and digital empathy experts</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {posts.map((post, index) => (
+            <article key={post.id} className={index === 0 ? "md:col-span-2" : ""}>
+              <Link href={`/blog/${post.slug}`}>
+                <Image 
+                  src={post.coverImage || '/placeholder.jpg'} 
+                  alt={post.title}
+                  width={500}
+                  height={300}
+                  className="w-full h-48 object-cover mb-4 rounded"
+                />
+                <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
+              </Link>
+              <div className="prose prose-sm max-w-none mb-2">
+                <MDXRemote 
+                  source={post.excerpt} 
+                  components={MDXComponents}
+                  options={{
+                    mdxOptions: {
+                      development: process.env.NODE_ENV === 'development'
+                    }
+                  }}
+                />
+              </div>
+              <Link href={`/blog/${post.slug}`} className="text-blue-600 hover:underline">
+                Read more
+              </Link>
+            </article>
           ))}
         </div>
       </div>
-      <aside className="lg:col-span-1">
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h3 className="text-xl font-semibold mb-4">Recent Articles</h3>
-          <ul className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <li key={i}>
-                <h4 className="font-medium">AI in Finance: Transforming Investment Strategies</h4>
-                <p className="text-gray-500 text-sm">July 5, 2024</p>
-              </li>
-            ))}
-          </ul>
+
+      {/* Trending section */}
+      <section id="trending" className="mt-12">
+        <h2 className="text-2xl font-bold mb-4">TRENDING</h2>
+        {/* Pour la section de tendances, vous pouvez ajouter une logique pour afficher les posts les plus populaires */}
+        {/* Par exemple : */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {posts.slice(0, 3).map((post) => (
+            <div key={post.id} className="bg-white p-4 rounded shadow">
+              <Link href={`/blog/${post.slug}`}>
+                <h3 className="font-semibold mb-2">{post.title}</h3>
+              </Link>
+              <p className="text-sm text-gray-600">{post.excerpt.substring(0, 100)}...</p>
+            </div>
+          ))}
         </div>
-        <div className="bg-secondary text-white rounded-lg shadow-md p-6">
-          <h3 className="text-xl font-semibold mb-2">Stay Informed</h3>
-          <p className="mb-4">Get our FREE 5 minute weekly email used by +40,000 investors.</p>
-          <input type="email" placeholder="Email address" className="w-full p-2 mb-2 rounded text-gray-800" />
-          <button className="w-full bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700 transition">Subscribe</button>
-        </div>
-      </aside>
-    </div>
-  );
+      </section>
+    </>
+  )
 }
