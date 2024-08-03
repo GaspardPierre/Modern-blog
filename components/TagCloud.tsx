@@ -1,11 +1,5 @@
 import Link from 'next/link'
-
-interface Tag {
-  id: number;
-  name: string;
-  slug: string;
-  count: number;
-}
+import { Tag } from'@/types'
 
 interface TagCloudProps {
   tags: Tag[];

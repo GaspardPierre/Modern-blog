@@ -1,7 +1,8 @@
 
 import prisma from './prisma'
+import { Post, Tag } from '@/types'
 
-export async function getAllPosts(limit = 10) {
+export async function getAllPosts(limit = 10) : Promise<Post[]> { 
   const posts = await prisma.post.findMany({
     take: limit,
     orderBy: { createdAt: 'desc' },
@@ -20,7 +21,7 @@ export async function createPost(data: {
   content: string;
   authorId: number;
   published?: boolean;
-}) {
+}): Promise<Post> {
   const { title, content, authorId, published } = data
 
   if (!title || !content || !authorId) {
@@ -40,7 +41,7 @@ export async function createPost(data: {
 
 
 
-export async function getPostBySlug(slugOrId: string) {
+export async function getPostBySlug(slugOrId: string): Promise<Post | null> {
   try {
     const isNumeric = /^\d+$/.test(slugOrId);
     const post = await prisma.post.findFirst({
@@ -78,7 +79,7 @@ export async function getPostBySlug(slugOrId: string) {
   }
 }
 
-export async function getPostsByTag(tagSlug: string) {
+export async function getPostsByTag(tagSlug: string): Promise<{ posts: Post[], tag: Tag | null }> {
   try {
     const tag = await prisma.tag.findUnique({
       where: { slug: tagSlug },

@@ -10,18 +10,12 @@ import { Button } from '@/components/ui/button'
 import { Select } from '@/components/ui/select'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import SubmitButton from '@/components/SubmitButton'
-import { createPost } from '@/lib/posts' // Import createPost from lib/posts
+import { createPost } from '@/lib/posts'
+import { Author } from '@/types' // Import createPost from lib/posts
 
 const MDXRemote = dynamic(() => import('next-mdx-remote/rsc'))
 const MDXComponents = dynamic(() => import('@/components/MDXComponents'))
 
-//types
-
-interface Author {
-  id: number
-  firstName: string
-  lastName: string
-}
 
 interface NewPostFormProps {
   authors: Author[]

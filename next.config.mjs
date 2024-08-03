@@ -57,6 +57,7 @@ const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   experimental: {
     mdxRs: true,
+    appDir: true,
     serverComponentsExternalPackages: ['@prisma/client'],
   },
   images: {
@@ -81,7 +82,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'picsum.photos',
+        hostname: 'cloudflare-ipfs.com',
         port: '',
         pathname: '**',
       },
@@ -100,6 +101,18 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
+        port: '',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: '"cloudflare-ipfs.comapi',
+        port: '',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
         port: '',
         pathname: '**',
       },

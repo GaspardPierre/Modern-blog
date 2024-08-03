@@ -6,7 +6,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-export async function generateMetadata({ params }) {
+
+interface Params {
+  params: {
+    slug: string
+  }
+}
+export async function generateMetadata({ params }: Params) {
   console.log("Params:", params);
   const post = await getPostBySlug(params.slug)
   console.log("POST ", post)
@@ -14,13 +20,13 @@ export async function generateMetadata({ params }) {
   return { title: post.title }
 }
 
-export default async function BlogPost({ params }) {
+export default async function BlogPost({ params }: Params) {
   console.log("Page Params:", params);
   const post = await getPostBySlug(params.slug)
   console.log("Page Post:", post)
   if (!post) notFound()
 
-  const readingTime = Math.ceil(post.content.split(' ').length / 200) // Estimation basique du temps de lecture
+  const readingTime = Math.ceil(post.content.split(' ').length / 200) 
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-8">
