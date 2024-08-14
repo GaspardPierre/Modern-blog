@@ -7,20 +7,22 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        default: "bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-300",
+        destructive: "bg-teal-700 text-white hover:bg-teal-800 focus:ring-red-300",
+        outline: "border border-primary-300 bg-transparent text-primary-500 hover:bg-primary-50 focus:ring-primary-300",
+        secondary: "bg-secondary-500 text-white hover:bg-secondary-600 focus:ring-secondary-300",
+        accent: "bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-300",
+        ghost: "bg-transparent text-primary-500 hover:bg-primary-50 focus:ring-primary-300",
+        link: "bg-transparent text-primary-500 underline-offset-4 hover:underline focus:ring-primary-300",
+        success: "bg-green-500 text-white hover:bg-green-600 focus:ring-green-300",
+        warning: "bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-300",
+        info: "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-300",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
+        sm: "h-8 rounded-md px-3 text-xs",
+        lg: "h-12 rounded-md px-8 text-base",
+        xl: "h-14 rounded-md px-10 text-lg",
         icon: "h-10 w-10",
       },
     },

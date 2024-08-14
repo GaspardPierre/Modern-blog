@@ -17,11 +17,11 @@ export default async function HomePage() {
             <article key={post.id} className={index === 0 ? "md:col-span-2" : ""}>
               <Link href={`/blog/${post.slug}`}>
                 <Image 
-                  src={post.coverImage || '/placeholder.jpg'} 
+                  src={post.coverImage} 
                   alt={post.title}
                   width={500}
-                  height={300}
-                  className="w-full h-48 object-cover mb-4 rounded"
+                  height={500}
+                  className="w-full h-48 md:h-72 object-cover mb-4 rounded"
                 />
                 <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
               </Link>

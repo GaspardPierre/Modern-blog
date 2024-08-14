@@ -10,61 +10,26 @@ import { Button } from '@/components/ui/button'
 import { Select } from '@/components/ui/select'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import SubmitButton from '@/components/SubmitButton'
-import { createPost } from '@/lib/posts'
-import { Author } from '@/types' // Import createPost from lib/posts
+import { handleCreatePost } from '@/lib/serverActions'
+import { Author, Tag, FormState } from '@/types'
 
-const MDXRemote = dynamic(() => import('next-mdx-remote/rsc'))
-const MDXComponents = dynamic(() => import('@/components/MDXComponents'))
-
+const MDXRemote = dynamic(() => import('next-mdx-remote').then(mod => mod.MDXRemote), {
+  ssr: false,
+})
+const MDXComponents = dynamic(() => import('@/components/MDXComponents'), {
+  ssr: false,
+})
 
 interface NewPostFormProps {
   authors: Author[]
-}
-
-interface FormState {
-  message: string
-  errors?: {
-    title?: string[]
-    content?: string[]
-    authorId?: string[]
-  }
+  tags: Tag[]
 }
 
 const initialState: FormState = {
   message: '',
 }
 
-async function handleCreatePost(prevState: FormState, formData: FormData): Promise<FormState> {
-  const title = formData.get('title') as string
-  const content = formData.get('content') as string
-  const authorId = formData.get('authorId') as string
-
-  if (!title || !content || !authorId) {
-    return {
-      message: 'Tous les champs sont requis',
-      errors: {
-        title: title ? undefined : ['Le titre est requis'],
-        content: content ? undefined : ['Le contenu est requis'],
-        authorId: authorId ? undefined : ["L'auteur est requis"],
-      },
-    }
-  }
-
-  try {
-    await createPost({
-      title,
-      content,
-      authorId: parseInt(authorId),
-      published: true,
-    })
-
-    return { message: 'Post créé avec succès' }
-  } catch (error) {
-    return { message: 'Erreur lors de la création du post' }
-  }
-}
-
-export default function NewPostForm({ authors }: NewPostFormProps) {
+export default function NewPostForm({ authors, tags }: NewPostFormProps) {
   const [state, formAction] = useFormState(handleCreatePost, initialState)
   const [preview, setPreview] = useState(false)
   const router = useRouter()
@@ -115,17 +80,42 @@ export default function NewPostForm({ authors }: NewPostFormProps) {
         )}
       </div>
       <div>
+        <label htmlFor="coverImage" className="block text-sm font-medium text-gray-700">Image de couverture (URL)</label>
+        <Input
+          id="coverImage"
+          name="coverImage"
+          type="url"
+          placeholder="https://example.com/image.jpg"
+        />
+        {state.errors?.coverImage && (
+          <p className="text-red-500 text-sm mt-1">{state.errors.coverImage[0]}</p>
+        )}
+      </div>
+      <div>
         <label htmlFor="content" className="block text-sm font-medium text-gray-700">Contenu</label>
         <Textarea
           id="content"
           name="content"
-          placeholder="Écrivez votre post ici..."
+          placeholder="Écrivez votre post ici... Utilisez ![alt text](image_url) pour ajouter des images."
           rows={10}
           required
         />
         {state.errors?.content && (
           <p className="text-red-500 text-sm mt-1">{state.errors.content[0]}</p>
         )}
+      </div>
+      <div>
+        <label htmlFor="tags" className="block text-sm font-medium text-gray-700">Tags</label>
+        <Select
+          id="tags"
+          name="tagIds"
+          multiple
+          required
+          options={tags.map(tag => ({
+            value: tag.id.toString(),
+            label: tag.name
+          }))}
+        />
       </div>
       <div className="flex justify-between items-center">
         <Button
@@ -140,6 +130,13 @@ export default function NewPostForm({ authors }: NewPostFormProps) {
       {preview && (
         <div className="mt-8 prose">
           <h2>{(document.getElementById('title') as HTMLInputElement)?.value}</h2>
+          {(document.getElementById('coverImage') as HTMLInputElement)?.value && (
+            <img 
+              src={(document.getElementById('coverImage') as HTMLInputElement)?.value} 
+              alt="Cover" 
+              className="w-full h-48 object-cover mb-4 rounded" 
+            />
+          )}
           <MDXRemote 
             source={(document.getElementById('content') as HTMLTextAreaElement)?.value} 
             components={MDXComponents}

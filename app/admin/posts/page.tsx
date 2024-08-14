@@ -1,72 +1,101 @@
-// app/admin/posts/new/page.tsx
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import dynamic from 'next/dynamic';
-const MDXRemote = dynamic(() => import('next-mdx-remote/rsc'));
-const MDXComponents = dynamic(() => import('@/components/MDXComponents'));
+import { Edit, Eye } from 'lucide-react'
 
-export default function NewPost() {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const router = useRouter()
+interface Post {
+  id: number;
+  title: string;
+  createdAt: string;
+  published: boolean;
+}
 
-  const handleSave = async () => {
-    const postData = {
-      title,
-      content,
-      authorId: 1,
-      published: true,
+export default function AdminPostsList() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('/api/posts');
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(data);
+      } else {
+        console.error('Failed to fetch posts');
+      }
+    } catch (error) {
+      console.error('Error fetching posts:', error);
     }
+  };
 
-    const response = await fetch('/api/posts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(postData),
-    })
-
-    if (response.ok) {
-      const savedPost = await response.json()
-      console.log('New post saved:', savedPost)
-      router.push('/admin/posts')
-    } else {
-      console.error('Failed to save post')
-    }
-  }
+  const filteredPosts = posts.filter(post =>
+    post.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Create New Post</CardTitle>
+          <CardTitle className="text-2xl font-bold">All Posts</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
+          <div className="flex justify-between items-center mb-4">
             <Input
               type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Post title"
-              className="w-full"
+              placeholder="Search posts..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-60"
             />
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Write your post content here..."
-              className="w-full h-64"
-            />
-            <div className="preview">
-              <h2 className="text-2xl font-bold">{title}</h2>
-              <MDXRemote source={content} components={MDXComponents} />
-            </div>
-            <Button onClick={handleSave} className="w-full">
-              Save Post
-            </Button>
+            <Link href="/admin/posts/new">
+              <Button>Create New Post</Button>
+            </Link>
+          </div>
+          <div className="grid grid-cols-[1fr,auto,auto,auto] gap-4">
+            <div className="font-medium text-gray-800">Title</div>
+            <div className="text-center">Edit</div>
+            <div className="text-center">View</div>
+            <div className="text-center">Status</div>
+            {filteredPosts.map((post) => (
+              <>
+                <div key={post.id} className="flex flex-col justify-center">
+                  <p className="font-medium text-gray-800">{post.title}</p>
+                  <span className="text-sm text-gray-500">
+                    {new Date(post.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex items-center justify-center">
+                  <Link href={`/admin/posts/edit/${post.id}`}>
+                    <Button variant="outline" size="sm">
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                </div>
+                <div className="flex items-center justify-center">
+                  <Link href={`/blog/${post.id}`}>
+                    <Button variant="outline" size="sm">
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                </div>
+                <div className="flex items-center justify-center">
+                  <Button 
+                    variant={post.published ? "default" : "secondary"} 
+                    
+                  >
+                    {post.published ? "Published" : "Draft"}
+                  </Button>
+                </div>
+              </>
+            ))}
           </div>
         </CardContent>
       </Card>

@@ -51,7 +51,7 @@ async function main() {
 
   // Créer quelques tags
   const tags = await Promise.all(
-    Array.from({ length: 5 }, async () => {
+    Array.from({ length: 10 }, async () => {
       const name = faker.word.noun();
       return prisma.tag.create({
         data: {

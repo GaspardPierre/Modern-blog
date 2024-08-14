@@ -112,3 +112,13 @@ export type User = {
     USER = 'USER',
     ADMIN = 'ADMIN'
   }
+
+  export interface FormState {
+    message: string;
+    errors?: {
+      title?: string[];
+      content?: string[];
+      authorId?: string[];
+      coverImage?: string[];
+    };
+  }

@@ -21,24 +21,36 @@ export async function createPost(data: {
   content: string;
   authorId: number;
   published?: boolean;
+  excerpt?: string;
+  coverImage?: string;
+  tagIds?: number[];
 }): Promise<Post> {
-  const { title, content, authorId, published } = data
+  console.log("CreatePost function called", data);
+  const { title, content, authorId, published, excerpt, coverImage, tagIds } = data
 
   if (!title || !content || !authorId) {
+    console.error("Missing required fields");
     throw new Error('Missing required fields')
   }
+
+  const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
 
   return await prisma.post.create({
     data: {
       title,
       content,
+      authorId,
       published: published || false,
-      author: { connect: { id: authorId } },
+      excerpt: excerpt || content.substring(0, 150) + '...',
+      slug,
+      coverImage,
+      tags: tagIds ? {
+        connect: tagIds.map(id => ({ id }))
+      } : undefined
     },
-    include: { author: true },
+    include: { author: true, tags: true },
   })
 }
-
 
 
 export async function getPostBySlug(slugOrId: string): Promise<Post | null> {
@@ -120,4 +132,55 @@ export async function getPostsByTag(tagSlug: string): Promise<{ posts: Post[], t
     console.error('Error fetching posts by tag:', error)
     throw error
   }
+}
+
+export async function getPostById(id: number) : Promise<Post | null> {
+  return await prisma.post.findUnique({
+    where: {id},
+    include: {
+      author: true,
+      tags: true,
+    }
+  })
+}
+
+export async function updatePost(id: number, data: {
+  title: string;
+  content: string;
+  authorId: number;
+  published?: boolean;
+  excerpt?: string;
+  coverImage?: string;
+  tagIds?: number[];
+}): Promise<Post> {
+  const { title, content, authorId, published, excerpt, coverImage, tagIds } = data
+
+  if (!title || !content || !authorId) {
+    throw new Error('Missing required fields')
+  }
+
+  const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+
+  return await prisma.post.update({
+    where: { id },
+    data: {
+      title,
+      content,
+      authorId,
+      published: published || false,
+      excerpt: excerpt || content.substring(0, 150) + '...',
+      slug,
+      coverImage,
+      tags: tagIds ? {
+        set: tagIds.map(id => ({ id }))
+      } : undefined
+    },
+    include: { author: true, tags: true },
+  })
+}
+
+export async function deletePost(id: number): Promise<void> {
+  await prisma.post.delete({
+    where: { id },
+  })
 }

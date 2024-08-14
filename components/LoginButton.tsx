@@ -10,7 +10,7 @@ export default function LoginButton() {
   if (session) {
     return (
       <div className="flex items-center space-x-4">
-        <span>Signed in as {session.user.email}</span>
+        <span>Signed in as {session.user.name}</span>
         {session.user.role === 'ADMIN' && (
           <Link href="/admin" className="text-blue-600 hover:underline">
             Admin
