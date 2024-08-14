@@ -2,12 +2,18 @@ import React from 'react'
 import { useFormStatus } from 'react-dom'
 import { Button } from '@/components/ui/button'
 
-const SubmitButton: React.FC = () => {
+interface SubmitButtonProps {
+  children: React.ReactNode;
+  loadingText?: string;
+  className?: string;
+}
+
+const SubmitButton: React.FC<SubmitButtonProps> = ({ children, loadingText = 'Chargement...', className }) => {
   const { pending } = useFormStatus()
 
   return (
-    <Button type="submit" disabled={pending}>
-      {pending ? 'Création...' : 'Créer le Post'}
+    <Button type="submit" disabled={pending} className={className}>
+      {pending ? loadingText : children}
     </Button>
   )
 }

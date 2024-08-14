@@ -5,6 +5,9 @@ import { formatDate } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getComments } from '@/lib/comments'
+import Comments  from'@/components/Comments'
+
 
 
 interface Params {
@@ -25,8 +28,16 @@ export default async function BlogPost({ params }: Params) {
   const post = await getPostBySlug(params.slug)
   console.log("Page Post:", post)
   if (!post) notFound()
+    const comments = await getComments(post.id)
 
   const readingTime = Math.ceil(post.content.split(' ').length / 200) 
+  const postUrl = `https://localhost:3000/blog/${params.slug}`
+
+  const disqusConfig = {
+    url: postUrl,
+    identifier: params.slug,
+    title: post.title
+  }
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-8">
@@ -84,6 +95,7 @@ export default async function BlogPost({ params }: Params) {
         <h2 className="text-2xl font-semibold mb-4 text-gray-900">Share this article</h2>
         {/* Ajoutez ici vos boutons de partage social */}
       </div>
+      <Comments postId={post.id} initialComments={comments} />
     </article>
   )
 }

@@ -5,7 +5,7 @@ import { getAllPosts } from '@/lib/posts'
 import MDXComponents from '@/components/MDXComponents'
 
 export default async function BlogPage() {
-  const posts = await getAllPosts(10) // Récupère les 10 derniers posts
+  const posts = await getAllPosts(10) 
 
   return (
     <>

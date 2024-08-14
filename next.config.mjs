@@ -61,6 +61,7 @@ const nextConfig = {
     serverComponentsExternalPackages: ['@prisma/client'],
   },
   images: {
+    domains: ['c.disquscdn.com'],
     remotePatterns: [
       {
         protocol: 'http',
@@ -119,11 +120,13 @@ const nextConfig = {
     ],
   },
   async headers() {
+   
     return [
       {
         source: '/(.*)',
         headers: securityHeaders,
       },
+    
     ];
   },
   webpack: (config, { isServer }) => {
