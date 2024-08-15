@@ -2,7 +2,7 @@
 import prisma from './prisma'
 import { Post, Tag } from '@/types'
 
-export async function getAllPosts(limit = 10) : Promise<Post[]> { 
+export async function getAllPosts(limit = 10, excerptWordLimit = 60): Promise<Post[]> {
   const posts = await prisma.post.findMany({
     take: limit,
     orderBy: { createdAt: 'desc' },
@@ -11,11 +11,18 @@ export async function getAllPosts(limit = 10) : Promise<Post[]> {
 
   return posts.map(post => ({
     ...post,
-    excerpt: post.content.split('\n\n').slice(0, 2).join('\n\n') + '...', // Prend les deux premiers paragraphes
-    slug: post.id.toString(), // ou utilisez un champ slug si vous en avez un
+    excerpt: createExcerpt(post.content, excerptWordLimit),
+    slug: post.id.toString(),
   }))
 }
 
+function createExcerpt(content: string, wordLimit: number): string {
+  const words = content.split(/\s+/)
+  if (words.length <= wordLimit) {
+    return content
+  }
+  return words.slice(0, wordLimit).join(' ') + '...'
+}
 export async function createPost(data: {
   title: string;
   content: string;

@@ -5,13 +5,20 @@ import { getPostsByTag } from '@/lib/posts'
 import MDXComponents from '@/components/MDXComponents'
 import { notFound } from 'next/navigation'
 
-export async function generateMetadata({ params }) {
+interface Params {
+  params: {
+    tagname: string;
+  };
+}
+
+
+export async function generateMetadata({ params }: Params) {
   const { posts, tag } = await getPostsByTag(params.tagname)
   if (!tag) return { title: 'Tag Not Found' }
   return { title: `Posts tagged with "${tag.name}" - Blog` }
 }
 
-export default async function TagPage({ params }) {
+export default async function TagPage({ params }: Params) {
   const { posts, tag } = await getPostsByTag(params.tagname)
   if (!tag) notFound()
 

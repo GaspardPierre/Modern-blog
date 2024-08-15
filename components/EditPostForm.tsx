@@ -1,61 +1,79 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react'
-import { useFormState } from 'react-dom'
-import { useRouter } from 'next/navigation'
-import dynamic from 'next/dynamic'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import { Select } from '@/components/ui/select'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import SubmitButton from '@/components/SubmitButton'
-import { handleUpdatePost } from '@/lib/serverActions'
-import { Author, Tag, FormState, Post } from '@/types'
+import React, { useEffect, useState } from "react";
+import { useFormState } from "react-dom";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import SubmitButton from "@/components/SubmitButton";
+import { handleUpdatePost } from "@/lib/serverActions";
+import { Author, Tag, FormState, Post } from "@/types";
+import { Check } from "lucide-react";
 
-const MDXRemote = dynamic(() => import('next-mdx-remote').then(mod => mod.MDXRemote), {
+const MDXRemote = dynamic(
+  () => import("next-mdx-remote").then((mod) => mod.MDXRemote),
+  { ssr: false }
+);
+const MDXComponents = dynamic(() => import("@/components/MDXComponents"), {
   ssr: false,
-})
-const MDXComponents = dynamic(() => import('@/components/MDXComponents'), {
-  ssr: false,
-})
+});
 
 interface EditPostFormProps {
-  post: Post
-  authors: Author[]
-  tags: Tag[]
+  post: Post;
+  authors: Author[];
+  tags: Tag[];
 }
 
 const initialState: FormState = {
-  message: '',
-}
+  message: "",
+};
 
-export default function EditPostForm({ post, authors, tags }: EditPostFormProps) {
-  const [state, formAction] = useFormState(handleUpdatePost, initialState)
-  const [preview, setPreview] = useState(false)
-  const router = useRouter()
+export default function EditPostForm({
+  post,
+  authors,
+  tags,
+}: EditPostFormProps) {
+  const [state, formAction] = useFormState(handleUpdatePost, initialState);
+  const [isPreview, setIsPreview] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    if (state.message === 'Post mis à jour avec succès') {
+    if (state.message === "Post mis à jour avec succès") {
       setTimeout(() => {
-        router.push('/admin')
-      }, 2000)
+        router.push("/admin");
+      }, 2000);
     }
-  }, [state.message, router])
+  }, [state.message, router]);
+
+  const togglePreview = () => {
+    setIsPreview(!isPreview);
+  };
+  console.log(MDXComponents);
 
   return (
     <form action={formAction} className="space-y-4">
       <input type="hidden" name="id" value={post.id} />
       {state.message && (
-        <Alert variant={state.message.includes('succès') ? 'default' : 'destructive'}>
+        <Alert
+          variant={state.message.includes("succès") ? "default" : "destructive"}
+        >
           <AlertTitle>
-            {state.message.includes('succès') ? 'Succès' : 'Erreur'}
+            {state.message.includes("succès") ? "Succès" : "Erreur"}
           </AlertTitle>
           <AlertDescription>{state.message}</AlertDescription>
         </Alert>
       )}
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700">Titre</label>
+        <label
+          htmlFor="title"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Titre
+        </label>
         <Input
           id="title"
           name="title"
@@ -67,37 +85,14 @@ export default function EditPostForm({ post, authors, tags }: EditPostFormProps)
           <p className="text-red-500 text-sm mt-1">{state.errors.title[0]}</p>
         )}
       </div>
+      {/* Autres champs du formulaire... */}
       <div>
-        <label htmlFor="author" className="block text-sm font-medium text-gray-700">Auteur</label>
-        <Select
-          id="author"
-          name="authorId"
-          defaultValue={post.authorId.toString()}
-          required
-          options={authors.map(author => ({
-            value: author.id.toString(),
-            label: `${author.firstName} ${author.lastName}`
-          }))}
-        />
-        {state.errors?.authorId && (
-          <p className="text-red-500 text-sm mt-1">{state.errors.authorId[0]}</p>
-        )}
-      </div>
-      <div>
-        <label htmlFor="coverImage" className="block text-sm font-medium text-gray-700">Image de couverture (URL)</label>
-        <Input
-          id="coverImage"
-          name="coverImage"
-          type="url"
-          defaultValue={post.coverImage}
-          placeholder="https://example.com/image.jpg"
-        />
-        {state.errors?.coverImage && (
-          <p className="text-red-500 text-sm mt-1">{state.errors.coverImage[0]}</p>
-        )}
-      </div>
-      <div>
-        <label htmlFor="content" className="block text-sm font-medium text-gray-700">Contenu</label>
+        <label
+          htmlFor="content"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Contenu
+        </label>
         <Textarea
           id="content"
           name="content"
@@ -110,51 +105,48 @@ export default function EditPostForm({ post, authors, tags }: EditPostFormProps)
           <p className="text-red-500 text-sm mt-1">{state.errors.content[0]}</p>
         )}
       </div>
-      <div>
-        <label htmlFor="tags" className="block text-sm font-medium text-gray-700">Tags</label>
-        <Select
-          id="tags"
-          name="tagIds"
-          multiple
-          required
-          defaultValue={post.tags.map(tag => tag.id.toString())}
-          options={tags.map(tag => ({
-            value: tag.id.toString(),
-            label: tag.name
-          }))}
-        />
-      </div>
       <div className="flex justify-between items-center">
         <Button
           type="button"
-          onClick={() => setPreview(!preview)}
+          onClick={togglePreview}
           variant="outline"
         >
-          {preview ? 'Éditer' : 'Prévisualiser'}
+          {isPreview ? "Éditer" : "Prévisualiser"}
         </Button>
-        <SubmitButton />
+        <SubmitButton icon={<Check className="h-4 w-4" />}>Soumettre</SubmitButton>
       </div>
-      {preview && (
+      {isPreview && (
         <div className="mt-8 prose">
-          <h2>{(document.getElementById('title') as HTMLInputElement)?.value}</h2>
-          {(document.getElementById('coverImage') as HTMLInputElement)?.value && (
-            <img 
-              src={(document.getElementById('coverImage') as HTMLInputElement)?.value} 
-              alt="Cover" 
-              className="w-full h-48 object-cover mb-4 rounded" 
+          <h2>
+            {(document.getElementById("title") as HTMLInputElement)?.value}
+          </h2>
+          {(document.getElementById("coverImage") as HTMLInputElement)
+            ?.value && (
+            <img
+              src={
+                (document.getElementById("coverImage") as HTMLInputElement)
+                  ?.value
+              }
+              alt="Cover"
+              className="w-full h-48 object-cover mb-4 rounded"
             />
           )}
-          <MDXRemote 
-            source={(document.getElementById('content') as HTMLTextAreaElement)?.value} 
-            components={MDXComponents}
-            options={{
-              mdxOptions: {
-                development: process.env.NODE_ENV === 'development'
-              }
-            }}
-          />
+          {(() => {
+            const contentValue = (document.getElementById("content") as HTMLTextAreaElement)?.value || '';
+            return contentValue ? (
+              <MDXRemote
+                source={contentValue}
+                components={MDXComponents}
+                options={{
+                  mdxOptions: {
+                    development: process.env.NODE_ENV === "development",
+                  },
+                }}
+              />
+            ) : null;
+          })()}
         </div>
       )}
     </form>
-  )
+  );
 }

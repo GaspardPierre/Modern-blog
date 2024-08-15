@@ -11,7 +11,7 @@ export default async function HomePage() {
     <>
       <div className="md:w-3/4">
         <h1 className="text-4xl font-bold mb-4">The Hotjar blog</h1>
-        <p className="text-gray-600 mb-6">Content for UX, product, and digital empathy experts</p>
+        <p className="text-gray-600 mb-6">Société, Politique, Spiritualité, Poésie</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {posts.map((post, index) => (
             <article key={post.id} className={index === 0 ? "md:col-span-2" : ""}>

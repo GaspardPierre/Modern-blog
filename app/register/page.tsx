@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import { InferType } from "yup";
 import { useRouter } from "next/navigation"
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -16,6 +17,8 @@ const schema = yup.object({
   confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords must match').required("Please confirm your password"),
 }).required()
 
+type FormData = InferType<typeof schema>;
+
 export default function RegisterPage() {
   const router = useRouter()
   const [error, setError] = useState('')
@@ -23,7 +26,7 @@ export default function RegisterPage() {
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data : FormData) => {
     try {
       const response = await fetch('/api/register', {
         method: 'POST',

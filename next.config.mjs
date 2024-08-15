@@ -43,7 +43,7 @@ const securityHeaders = [
   },
   {
     key: 'Strict-Transport-Security',
-    value: 'max-age=31536000; includeSubDomains',
+    value: 'max-age=31536000; includeSubDomains; preload',
   },
   {
     key: 'Permissions-Policy',
@@ -57,7 +57,6 @@ const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   experimental: {
     mdxRs: true,
-    appDir: true,
     serverComponentsExternalPackages: ['@prisma/client'],
   },
   images: {
@@ -107,12 +106,6 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '"cloudflare-ipfs.comapi',
-        port: '',
-        pathname: '**',
-      },
-      {
-        protocol: 'https',
         hostname: 'picsum.photos',
         port: '',
         pathname: '**',
@@ -120,13 +113,11 @@ const nextConfig = {
     ],
   },
   async headers() {
-   
     return [
       {
         source: '/(.*)',
         headers: securityHeaders,
       },
-    
     ];
   },
   webpack: (config, { isServer }) => {

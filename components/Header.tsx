@@ -58,7 +58,7 @@ export default function Header() {
               ) : (
                 <Button onClick={toggleSearch} 
                 size="icon"
-                className="text-white hover:text-text transition-colors ml-5">
+                className="text-white hover:text-text transition-colors ml-5 p-2">
                   <Search size={36} 
                   className='bg-transparent'/>
                 </Button>

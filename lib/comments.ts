@@ -5,7 +5,10 @@ export async function getComments(postId: number) {
     where: { postId: postId },
     include: {
       user: {
-        select: { name: true }
+        select: { 
+          id: true,    
+          name: true   
+        }
       }
     },
     orderBy: { createdAt: 'desc' }

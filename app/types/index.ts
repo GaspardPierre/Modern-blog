@@ -88,14 +88,19 @@ export type User = {
     updatedAt: Date;
   };
   
+  export type SimplifiedUser = {
+    id: string;
+    name: string | null;
+  };
+  
   export type Comment = {
     id: number;
     content: string;
-    post: Post;
-    postId: number;
-    user: User;
+    createdAt: string;
     userId: string;
-    createdAt: Date;
+    postId: number;
+    user: SimplifiedUser;
+    post: Post;
   };
   
   export type Tag = {
