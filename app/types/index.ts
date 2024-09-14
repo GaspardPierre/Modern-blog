@@ -54,8 +54,8 @@ export type User = {
     bio: string;
     website: string | null;
     avatar: string | null;
-    posts: Post[];
-    videos: Video[];
+    posts?: Post[];
+    videos?: Video[];
     createdAt: Date;
     updatedAt: Date;
   };
@@ -67,25 +67,26 @@ export type User = {
     content: string;
     excerpt: string | null;
     published: boolean;
-    author: Author;
     authorId: number;
-    comments: Comment[];
-    tags: Tag[];
     coverImage: string | null;
     createdAt: Date;
     updatedAt: Date;
+    author?: Author; 
+    comments?: Comment[]; 
+    tags?: Tag[]; 
   };
+  
   
   export type Video = {
     id: number;
     title: string;
     slug: string;
     content: string;
-    author: Author;
     authorId: number;
-    tags: Tag[];
     createdAt: Date;
     updatedAt: Date;
+    author?: Author;  
+    tags?: Tag[];  
   };
   
   export type SimplifiedUser = {
@@ -96,12 +97,13 @@ export type User = {
   export type Comment = {
     id: number;
     content: string;
-    createdAt: string;
+    createdAt: Date;
     userId: string;
     postId: number;
-    user: SimplifiedUser;
+    user: User;
     post: Post;
   };
+  
   
   export type Tag = {
     id: number;
@@ -111,13 +113,20 @@ export type User = {
     videos: Video[];
     createdAt: Date;
     updatedAt: Date;
+    count?: number;
   };
   
   export enum Role {
     USER = 'USER',
     ADMIN = 'ADMIN'
   }
-
+export type PrismaTag = {
+  id: number;
+  name: string;
+  slug: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
   export interface FormState {
     message: string;
     errors?: {
@@ -127,3 +136,4 @@ export type User = {
       coverImage?: string[];
     };
   }
+ 

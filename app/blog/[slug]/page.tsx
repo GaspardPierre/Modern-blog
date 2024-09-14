@@ -5,15 +5,18 @@ import { formatDate } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getComments } from '@/lib/comments';
-import { Tag, Comment } from '@/app/types';
-import Comments from '@/components/Comments';
+import { CommentWithUser, getComments } from '@/lib/comments';
+import { Tag } from '@/app/types';
+import CommentsComponent from '@/components/CommentsComponent';
 
 interface Params {
   params: {
     slug: string;
   };
 }
+
+
+
 
 export async function generateMetadata({ params }: Params) {
   const post = await getPostBySlug(params.slug);
@@ -27,22 +30,26 @@ export default async function BlogPost({ params }: Params) {
 
   const comments = await getComments(post.id);
   
-  
-  const commentsWithPost = comments.map(comment => ({
-    ...comment,
-    post: post,
+  const commentsWithPost: CommentWithUser[] = comments.map((comment) => ({
+    id: comment.id,
+    content: comment.content,
+    createdAt: comment.createdAt,
+    userId: comment.userId,
+    postId: comment.postId,
     user: {
-      id: comment.user.id ?? 'unknown', // Remplacer `undefined` par une valeur par défaut
+      id: comment.user.id,
       name: comment.user.name,
+      email: comment.user.email,
+      emailVerified: comment.user.emailVerified,
+      image: comment.user.image,
+      password: comment.user.password,
+      role: comment.user.role,
     }
   }));
-  
-  console.log(commentsWithPost);
-  
 
   const readingTime = Math.ceil(post.content.split(' ').length / 200);
 
-  return (
+    return (
     <article className="max-w-3xl mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-evently mb-8 space-y-4 md:space-y-0">
         {post.tags && post.tags.length > 0 && (
@@ -66,19 +73,21 @@ export default async function BlogPost({ params }: Params) {
 
       <h1 className="text-4xl font-bold mb-6 text-gray-900">{post.title}</h1>
 
-      <div className="flex items-center mb-8">
-        <Image
-          src={post.author.avatar || '/placeholder-avatar.png'}
-          alt={post.author.name}
-          width={50}
-          height={50}
-          className="rounded-full mr-4"
-        />
-        <div>
-          <p className="font-semibold text-gray-900">{post.author.name}</p>
-          <p className="text-gray-600 text-sm">{post.author.bio}</p>
+      {post.author && (
+        <div className="flex items-center mb-8">
+          <Image
+            src={post.author.avatar || '/placeholder-avatar.png'}
+            alt={post.author.name || 'Author'}
+            width={50}
+            height={50}
+            className="rounded-full mr-4"
+          />
+          <div>
+            <p className="font-semibold text-gray-900">{post.author.name || 'Anonymous'}</p>
+            <p className="text-gray-600 text-sm">{post.author.bio || 'No bio available'}</p>
+          </div>
         </div>
-      </div>
+      )}
 
       {post.coverImage && (
         <Image
@@ -98,7 +107,7 @@ export default async function BlogPost({ params }: Params) {
         <h2 className="text-2xl font-semibold mb-4 text-gray-900">Share this article</h2>
         {/* Ajoutez ici vos boutons de partage social */}
       </div>
-      <Comments postId={post.id} initialComments={commentsWithPost} />
+      <CommentsComponent postId={post.id} initialComments={commentsWithPost} />
     </article>
   );
 }

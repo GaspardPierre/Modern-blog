@@ -82,9 +82,9 @@ export const authOptions : AuthOptions = {
             console.log("User authenticated:", user);
             return { 
               id: user.id.toString(), 
-              email: user.email, 
+              email: user.email || null, 
               role: user.role,
-              name: user.name 
+              name: user.name || null,
             };
           } catch (error) {
             console.error("Error in authorize function:", error);

@@ -16,8 +16,8 @@ export default async function HomePage() {
           {posts.map((post, index) => (
             <article key={post.id} className={index === 0 ? "md:col-span-2" : ""}>
               <Link href={`/blog/${post.slug}`}>
-                <Image 
-                  src={post.coverImage} 
+              <Image 
+                  src={post.coverImage || '/placeholder.jpg'} 
                   alt={post.title}
                   width={500}
                   height={500}
@@ -26,6 +26,7 @@ export default async function HomePage() {
                 <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
               </Link>
               <div className="prose prose-sm max-w-none mb-2">
+              {post.excerpt && (
                 <MDXRemote 
                   source={post.excerpt} 
                   components={MDXComponents}
@@ -35,6 +36,7 @@ export default async function HomePage() {
                     }
                   }}
                 />
+              )}
               </div>
               <Link href={`/blog/${post.slug}`} className="text-blue-600 hover:underline">
                 Read more
@@ -47,15 +49,15 @@ export default async function HomePage() {
       {/* Trending section */}
       <section id="trending" className="mt-12">
         <h2 className="text-2xl font-bold mb-4">TRENDING</h2>
-        {/* Pour la section de tendances, vous pouvez ajouter une logique pour afficher les posts les plus populaires */}
-        {/* Par exemple : */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {posts.slice(0, 3).map((post) => (
             <div key={post.id} className="bg-white p-4 rounded shadow">
               <Link href={`/blog/${post.slug}`}>
                 <h3 className="font-semibold mb-2">{post.title}</h3>
               </Link>
-              <p className="text-sm text-gray-600">{post.excerpt.substring(0, 100)}...</p>
+              <p className="text-sm text-gray-600">
+                {post.excerpt ? `${post.excerpt.substring(0, 100)}...` : 'No excerpt available'}
+              </p>
             </div>
           ))}
         </div>
