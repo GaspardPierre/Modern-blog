@@ -1,4 +1,4 @@
-// @/lib/adminStats.ts
+
 import prisma from './prisma'
 import { formatDistanceToNow } from 'date-fns'
 import { Post, User, Comment } from '@prisma/client'
@@ -28,8 +28,29 @@ type MostCommentedPost = {
   commentCount: number;
 }
 
+type PostWithCommentCount = {
+  id: number;
+  title: string;
+  _count: {
+    comments: number;
+  };
+};
+
+type RecentPostWithAuthor = Post & {
+  author: {
+    firstName: string;
+    lastName: string;
+  };
+};
+type RecentActivity = {
+  action: string;
+  user: string;
+  time: string;
+}
+
+
 export async function getMostCommentedPosts(limit: number = 5): Promise<MostCommentedPost[]> {
-  const posts = await prisma.post.findMany({
+  const posts: PostWithCommentCount[] = await prisma.post.findMany({
     take: limit,
     orderBy: {
       comments: {
@@ -45,38 +66,34 @@ export async function getMostCommentedPosts(limit: number = 5): Promise<MostComm
         }
       }
     }
-  })
+  });
 
-  return posts.map(post => ({
+  return posts.map((post) => ({
     id: post.id,
     title: post.title,
-    commentCount: post._count.comments
-  }))
-}
-
-type RecentActivity = {
-  action: string;
-  user: string;
-  time: string;
+    commentCount: post._count.comments // `_count` est maintenant correctement typé
+  }));
 }
 
 export async function getRecentActivities(): Promise<RecentActivity[]> {
-  const recentPosts = await prisma.post.findMany({
+  const recentPosts: RecentPostWithAuthor[] = await prisma.post.findMany({
     take: 3,
     orderBy: {
       createdAt: 'desc'
     },
     include: {
-      author: true
+      author: true // Assurez-vous que Prisma retourne les champs de l'auteur
     }
-  })
+  });
 
-  return recentPosts.map(post => ({
+  return recentPosts.map((post) => ({
     action: 'New post created',
     user: `${post.author.firstName} ${post.author.lastName}`,
     time: formatRelativeTime(post.createdAt)
-  }))
+  }));
 }
+
+
 
 function formatRelativeTime(date: Date): string {
   return formatDistanceToNow(date, { addSuffix: true })

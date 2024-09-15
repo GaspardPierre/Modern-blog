@@ -1,21 +1,40 @@
-import prisma from './prisma'
+import prisma from './prisma';
+import { Comment } from '@prisma/client';
 
-export async function getComments(postId: number) {
+
+export type CommentWithUser = Omit<Comment, 'createdAt'> & {
+  user: {
+    id: string;
+    name: string | null;
+    email: string | null;
+    emailVerified: Date | null;
+    image: string | null;
+    password: string | null;
+    role: string;
+  };
+  createdAt: Date | string;
+};
+
+export async function getComments(postId: number): Promise<CommentWithUser[]> {
   const comments = await prisma.comment.findMany({
-    where: { postId: postId },
+    where: { postId },
     include: {
       user: {
-        select: { 
-          id: true,    
-          name: true   
-        }
-      }
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          emailVerified: true,
+          image: true,
+          password: true,
+          role: true,
+        },
+      },
     },
-    orderBy: { createdAt: 'desc' }
-  })
+  });
 
-  return comments.map(comment => ({
+  return comments.map((comment) => ({
     ...comment,
-    createdAt: comment.createdAt.toISOString()
-  }))
+    createdAt: comment.createdAt.toISOString(),
+  }));
 }

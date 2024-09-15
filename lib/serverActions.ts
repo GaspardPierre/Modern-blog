@@ -1,8 +1,7 @@
 'use server'
 
-import { createPost } from '@/lib/posts';
-import { updatePost } from '@/lib/posts';
-import { FormState } from '@/types';
+import { createPost, deletePost , updatePost} from '@/lib/posts';
+import { FormState } from '@/app/types';
 
 export async function handleCreatePost(prevState: FormState, formData: FormData): Promise<FormState> {
   console.log("HandleCreatePost called", Object.fromEntries(formData));
@@ -46,8 +45,8 @@ export async function handleCreatePost(prevState: FormState, formData: FormData)
 export async function handleUpdatePost(prevState: FormState, formData: FormData): Promise<FormState> {
   const id = formData.get('id') as string;
   const title = formData.get('title') as string;
-  const authorId = formData.get('authorId') as string;
   const content = formData.get('content') as string;
+  const authorId = formData.get('authorId') as string;
   const coverImage = formData.get('coverImage') as string;
   const tagIds = formData.getAll('tagIds').map(id => parseInt(id as string));
 

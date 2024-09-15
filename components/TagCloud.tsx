@@ -33,17 +33,19 @@ const iconMap = {
 };
 
 const colorMap = {
-  société: "bg-blue-200 text-blue-800",
-  science: "bg-indigo-200 text-indigo-800",
-  politique: "bg-red-200 text-red-800",
-  spiritualité: "bg-purple-200 text-purple-800",
-  divers: "bg-green-200 text-green-800",
-  insolite: "bg-yellow-200 text-yellow-800",
-  technologie: "bg-gray-200 text-gray-800",
-  "vie quotidienne": "bg-pink-200 text-pink-800",
-  environnement: "bg-teal-200 text-teal-800",
-  poésie: "bg-cyan-200 text-cyan-800",
-};
+  société: 'bg-sky-900 text-white',        // Deep sky blue for a mature feel
+  science: 'bg-indigo-800 text-white',     // Dark indigo for a serious, modern tone
+  politique: 'bg-red-700 text-white',      // Darker red for a strong, yet professional look
+  spiritualité: 'bg-purple-800 text-white', // Dark purple for a calming, balanced presence
+  divers: 'bg-emerald-800 text-white',     // Deep emerald green for a natural and refined vibe
+  insolite: 'bg-yellow-700 text-white',    // Muted golden yellow to signify importance without being too bright
+  technologie: 'bg-gray-700 text-white',   // Dark gray for a sleek, tech-focused aesthetic
+  "vie quotidienne": 'bg-pink-700 text-white', // Deep pink for a modern twist with elegance
+  environnement: 'bg-teal-800 text-white', // Dark teal to symbolize nature in a sophisticated way
+  poésie: 'bg-cyan-800 text-white'         // Deep cyan for a creative yet understated flair
+}
+
+
 
 export default function TagCloud({ tags }: TagCloudProps) {
   const tagsWithCount = tags.map((tag) => ({
@@ -69,10 +71,10 @@ export default function TagCloud({ tags }: TagCloudProps) {
             <Link
               key={tag.id}
               href={`/blog/tag/${tag.slug}`}
-              className={`flex items-center px-3 py-1 rounded-full text-sm hover:opacity-80 transition-opacity ${colorClass}`}
+              className={`flex items-center px-3 py-1 rounded-sm text-sm hover:opacity-80 transition-opacity ${colorClass}`}
             >
               <TagIcon size={16} className="mr-1" />
-              {tag.name}
+              {tag.name.toUpperCase()} ({tag.count})
             </Link>
           );
         })}

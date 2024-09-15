@@ -6,6 +6,10 @@ export async function getAllTags() {
       id: true,
       name: true,
       slug: true,
+      posts: true,
+      videos: true,
+      createdAt: true, 
+      updatedAt: true, 
       _count: {
         select: { posts: true }
       }

@@ -1,0 +1,1063 @@
+diff --git a/components/EditPostForm.tsx b/components/EditPostForm.tsx
+index f9de1cf3..41814657 100644
+--- a/components/EditPostForm.tsx
++++ b/components/EditPostForm.tsx
+@@ -5,6 +5,7 @@ import { useFormState } from "react-dom";
+ import { useRouter } from "next/navigation";
+ import dynamic from "next/dynamic";
+ import { Input } from "@/components/ui/input";
++import { Select } from "@/components/ui/select";
+ import { Textarea } from "@/components/ui/textarea";
+ import { Button } from "@/components/ui/button";
+ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+@@ -21,12 +22,6 @@ const MDXRemote = dynamic(
+ );
+ 
+ 
+-interface EditPostFormProps {
+-  post: Post;
+-  authors: Author[];
+-  tags: Tag[];
+-}
+-
+ interface EditPostFormProps {
+   post: Post;
+   authors: Author[];
+@@ -41,6 +36,7 @@ export default function EditPostForm({
+   post,
+   authors,
+   tags,
++
+ }: EditPostFormProps) {
+   const [state, formAction] = useFormState(handleUpdatePost, initialState);
+   const [isPreview, setIsPreview] = useState(false);
+@@ -78,10 +74,7 @@ export default function EditPostForm({
+         </Alert>
+       )}
+       <div>
+-        <label
+-          htmlFor="title"
+-          className="block text-sm font-medium text-gray-700"
+-        >
++        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+           Titre
+         </label>
+         <Input
+@@ -95,12 +88,32 @@ export default function EditPostForm({
+           <p className="text-red-500 text-sm mt-1">{state.errors.title[0]}</p>
+         )}
+       </div>
+- 
+       <div>
+-        <label
+-          htmlFor="content"
+-          className="block text-sm font-medium text-gray-700"
++        <label htmlFor="author" className="block text-sm font-medium text-gray-700">
++          Auteur
++        </label>
++        <Select
++          id="author"
++          name="authorId"
++          defaultValue={post.authorId.toString()}
++          required
++          options={authors.map(author => ({
++            value: author.id.toString(),
++            label: `${author.firstName} ${author.lastName}`
++          }))}
+         >
++          {authors.map((author) => (
++            <option key={author.id} value={author.id.toString()}>
++              {author.firstName} {author.lastName}
++            </option>
++          ))}
++        </Select>
++        {state.errors?.authorId && (
++          <p className="text-red-500 text-sm mt-1">{state.errors.authorId[0]}</p>
++        )}
++      </div>
++      <div>
++        <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+           Contenu
+         </label>
+         <Textarea
+@@ -115,6 +128,40 @@ export default function EditPostForm({
+           <p className="text-red-500 text-sm mt-1">{state.errors.content[0]}</p>
+         )}
+       </div>
++      <div>
++        <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
++          Tags
++        </label>
++        <Select
++          id="tags"
++          name="tagIds"
++          multiple
++          defaultValue={post.tags?.map(tag => tag.id.toString())
++             || []}
++             options={tags.map(tag => ({
++              value: tag.id.toString(),
++              label: tag.name
++            }))}
++        >
++          {tags.map((tag) => (
++            <option key={tag.id} value={tag.id.toString()}>
++              {tag.name}
++            </option>
++          ))}
++        </Select>
++      </div>
++      <div>
++        <label htmlFor="coverImage" className="block text-sm font-medium text-gray-700">
++          Image de couverture (URL)
++        </label>
++        <Input
++          id="coverImage"
++          name="coverImage"
++          type="url"
++          defaultValue={post.coverImage || ''}
++          placeholder="https://example.com/image.jpg"
++        />
++      </div>
+       <div className="flex justify-between items-center">
+         <Button
+           type="button"
+@@ -125,26 +172,19 @@ export default function EditPostForm({
+         </Button>
+         <SubmitButton icon={<Check className="h-4 w-4" />}>Soumettre</SubmitButton>
+       </div>
+-      {isPreview && mdxSource && (
++      {isPreview && (
+         <div className="mt-8 prose">
+           <h2>
+             {(document.getElementById("title") as HTMLInputElement)?.value}
+           </h2>
+-          {(document.getElementById("coverImage") as HTMLInputElement)
+-            ?.value && (
++          {(document.getElementById("coverImage") as HTMLInputElement)?.value && (
+             <img
+-              src={
+-                (document.getElementById("coverImage") as HTMLInputElement)
+-                  ?.value
+-              }
++              src={(document.getElementById("coverImage") as HTMLInputElement)?.value}
+               alt="Cover"
+               className="w-full h-48 object-cover mb-4 rounded"
+             />
+           )}
+-          <MDXRemote
+-            {...mdxSource}
+-            components={MDXComponents}
+-          />
++          <MDXRemote {...mdxSource} components={MDXComponents} />
+         </div>
+       )}
+     </form>
+diff --git a/components/Footer.tsx b/components/Footer.tsx
+index c0a5d4a4..82c5c1b3 100755
+--- a/components/Footer.tsx
++++ b/components/Footer.tsx
+@@ -13,10 +13,10 @@ export default function Footer() {
+           <div>
+             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+             <ul className="space-y-2">
+-              <li><Link href="#" className="text-sm text-gray-400 hover:text-white">Home</Link></li>
+-              <li><Link href="#" className="text-sm text-gray-400 hover:text-white">Articles</Link></li>
+-              <li><Link href="#" className="text-sm text-gray-400 hover:text-white">Videos</Link></li>
+-              <li><Link href="#" className="text-sm text-gray-400 hover:text-white">Companies</Link></li>
++              <li><Link href="/" className="text-sm text-gray-400 hover:text-white">Home</Link></li>
++              <li><Link href="/blog" className="text-sm text-gray-400 hover:text-white">Articles</Link></li>
++              <li><Link href="/videos" className="text-sm text-gray-400 hover:text-white">Videos</Link></li>
++              <li><Link href="/about" className="text-sm text-gray-400 hover:text-white">A propos</Link></li>
+             </ul>
+           </div>
+           <div>
+diff --git a/components/TagCloud.tsx b/components/TagCloud.tsx
+index db4d7581..87a649f0 100755
+--- a/components/TagCloud.tsx
++++ b/components/TagCloud.tsx
+@@ -33,17 +33,19 @@ const iconMap = {
+ };
+ 
+ const colorMap = {
+-  société: "bg-blue-200 text-blue-800",
+-  science: "bg-indigo-200 text-indigo-800",
+-  politique: "bg-red-200 text-red-800",
+-  spiritualité: "bg-purple-200 text-purple-800",
+-  divers: "bg-green-200 text-green-800",
+-  insolite: "bg-yellow-200 text-yellow-800",
+-  technologie: "bg-gray-200 text-gray-800",
+-  "vie quotidienne": "bg-pink-200 text-pink-800",
+-  environnement: "bg-teal-200 text-teal-800",
+-  poésie: "bg-cyan-200 text-cyan-800",
+-};
++  société: 'bg-sky-900 text-white',        // Deep sky blue for a mature feel
++  science: 'bg-indigo-800 text-white',     // Dark indigo for a serious, modern tone
++  politique: 'bg-red-700 text-white',      // Darker red for a strong, yet professional look
++  spiritualité: 'bg-purple-800 text-white', // Dark purple for a calming, balanced presence
++  divers: 'bg-emerald-800 text-white',     // Deep emerald green for a natural and refined vibe
++  insolite: 'bg-yellow-700 text-white',    // Muted golden yellow to signify importance without being too bright
++  technologie: 'bg-gray-700 text-white',   // Dark gray for a sleek, tech-focused aesthetic
++  "vie quotidienne": 'bg-pink-700 text-white', // Deep pink for a modern twist with elegance
++  environnement: 'bg-teal-800 text-white', // Dark teal to symbolize nature in a sophisticated way
++  poésie: 'bg-cyan-800 text-white'         // Deep cyan for a creative yet understated flair
++}
++
++
+ 
+ export default function TagCloud({ tags }: TagCloudProps) {
+   const tagsWithCount = tags.map((tag) => ({
+@@ -69,10 +71,10 @@ export default function TagCloud({ tags }: TagCloudProps) {
+             <Link
+               key={tag.id}
+               href={`/blog/tag/${tag.slug}`}
+-              className={`flex items-center px-3 py-1 rounded-full text-sm hover:opacity-80 transition-opacity ${colorClass}`}
++              className={`flex items-center px-3 py-1 rounded-sm text-sm hover:opacity-80 transition-opacity ${colorClass}`}
+             >
+               <TagIcon size={16} className="mr-1" />
+-              {tag.name}
++              {tag.name.toUpperCase()} ({tag.count})
+             </Link>
+           );
+         })}
+diff --git a/components/ui/select.tsx b/components/ui/select.tsx
+index bd03c17b..3b703b96 100755
+--- a/components/ui/select.tsx
++++ b/components/ui/select.tsx
+@@ -7,7 +7,7 @@ export interface SelectProps
+ }
+ 
+ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
+-  ({ className, options, ...props }, ref) => {
++  ({ className, options = [], ...props }, ref) => {
+     return (
+       <select
+         className={`block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm ${className}`}
+diff --git a/lib/adminStats.ts b/lib/adminStats.ts
+index 05310a0e..2b5255e3 100755
+--- a/lib/adminStats.ts
++++ b/lib/adminStats.ts
+@@ -1,4 +1,4 @@
+-// @/lib/adminStats.ts
++
+ import prisma from './prisma'
+ import { formatDistanceToNow } from 'date-fns'
+ import { Post, User, Comment } from '@prisma/client'
+@@ -28,8 +28,29 @@ type MostCommentedPost = {
+   commentCount: number;
+ }
+ 
++type PostWithCommentCount = {
++  id: number;
++  title: string;
++  _count: {
++    comments: number;
++  };
++};
++
++type RecentPostWithAuthor = Post & {
++  author: {
++    firstName: string;
++    lastName: string;
++  };
++};
++type RecentActivity = {
++  action: string;
++  user: string;
++  time: string;
++}
++
++
+ export async function getMostCommentedPosts(limit: number = 5): Promise<MostCommentedPost[]> {
+-  const posts = await prisma.post.findMany({
++  const posts: PostWithCommentCount[] = await prisma.post.findMany({
+     take: limit,
+     orderBy: {
+       comments: {
+@@ -45,39 +66,35 @@ export async function getMostCommentedPosts(limit: number = 5): Promise<MostComm
+         }
+       }
+     }
+-  })
++  });
+ 
+-  return posts.map(post => ({
++  return posts.map((post) => ({
+     id: post.id,
+     title: post.title,
+-    commentCount: post._count.comments
+-  }))
+-}
+-
+-type RecentActivity = {
+-  action: string;
+-  user: string;
+-  time: string;
++    commentCount: post._count.comments // `_count` est maintenant correctement typé
++  }));
+ }
+ 
+ export async function getRecentActivities(): Promise<RecentActivity[]> {
+-  const recentPosts = await prisma.post.findMany({
++  const recentPosts: RecentPostWithAuthor[] = await prisma.post.findMany({
+     take: 3,
+     orderBy: {
+       createdAt: 'desc'
+     },
+     include: {
+-      author: true
++      author: true // Assurez-vous que Prisma retourne les champs de l'auteur
+     }
+-  })
++  });
+ 
+-  return recentPosts.map(post => ({
++  return recentPosts.map((post) => ({
+     action: 'New post created',
+     user: `${post.author.firstName} ${post.author.lastName}`,
+     time: formatRelativeTime(post.createdAt)
+-  }))
++  }));
+ }
+ 
++
++
+ function formatRelativeTime(date: Date): string {
+   return formatDistanceToNow(date, { addSuffix: true })
+ }
+\ No newline at end of file
+diff --git a/lib/auth.ts b/lib/auth.ts
+index 91b7459d..2ce49d31 100755
+--- a/lib/auth.ts
++++ b/lib/auth.ts
+@@ -1,6 +1,26 @@
+ import { compare, hash } from 'bcrypt';
+ import prisma from './prisma';
+-import { User } from '@/types'
++import { User as NextAuthUser, Session, Account } from "next-auth";
++
++
++interface UserWithPassword extends NextAuthUser {
++  password?: string | null;
++}
++
++export async function getUserByEmail(email: string): Promise<UserWithPassword | null> {
++  const user = await prisma.user.findUnique({
++    where: { email },
++    include: {
++      accounts: true,
++      sessions: true,
++      comments: true,
++    },
++  });
++
++  return user;
++}
++
++
+ export async function createUser(email: string, password: string, role: 'USER' | 'ADMIN' = 'USER') {
+   const hashedPassword = await hash(password, 10);
+   console.log(`Creating user with email: ${email}, role: ${role}`);
+@@ -14,13 +34,9 @@ export async function createUser(email: string, password: string, role: 'USER' |
+ }
+ 
+ 
+-export async function getUserByEmail(email: string): Promise<User | null> {
+-  const user = await prisma.user.findUnique({ where: { email } })
+-  console.log("User found:", user) // Ajoutez ce log
+-  return user
+-}
+ 
+-export async function verifyPassword(user: User, password: string): Promise<boolean> {
++
++export async function verifyPassword(user: UserWithPassword, password: string): Promise<boolean> {
+   if (!user.password) {
+     console.log("User has no password")
+     return false
+diff --git a/lib/comments.ts b/lib/comments.ts
+index 8547f40c..c588b077 100644
+--- a/lib/comments.ts
++++ b/lib/comments.ts
+@@ -1,21 +1,40 @@
+-import prisma from './prisma'
++import prisma from './prisma';
++import { Comment } from '@prisma/client';
+ 
+-export async function getComments(postId: number) {
++
++export type CommentWithUser = Omit<Comment, 'createdAt'> & {
++  user: {
++    id: string;
++    name: string | null;
++    email: string | null;
++    emailVerified: Date | null;
++    image: string | null;
++    password: string | null;
++    role: string;
++  };
++  createdAt: Date | string;
++};
++
++export async function getComments(postId: number): Promise<CommentWithUser[]> {
+   const comments = await prisma.comment.findMany({
+-    where: { postId: postId },
++    where: { postId },
+     include: {
+       user: {
+-        select: { 
+-          id: true,    
+-          name: true   
+-        }
+-      }
++        select: {
++          id: true,
++          name: true,
++          email: true,
++          emailVerified: true,
++          image: true,
++          password: true,
++          role: true,
++        },
++      },
+     },
+-    orderBy: { createdAt: 'desc' }
+-  })
++  });
+ 
+-  return comments.map(comment => ({
++  return comments.map((comment) => ({
+     ...comment,
+-    createdAt: comment.createdAt.toISOString()
+-  }))
+-}
+\ No newline at end of file
++    createdAt: comment.createdAt.toISOString(),
++  }));
++}
+diff --git a/lib/posts.ts b/lib/posts.ts
+index 86e1b141..55fe4b35 100755
+--- a/lib/posts.ts
++++ b/lib/posts.ts
+@@ -1,19 +1,64 @@
+ 
+ import prisma from './prisma'
+-import { Post, Tag } from '@/types'
++import { Post, Tag ,Author, PrismaTag} from '@/app/types'
+ 
+-export async function getAllPosts(limit = 10, excerptWordLimit = 60): Promise<Post[]> {
++type PrismaPostWithAuthorAndTags = {
++  id: number;
++  title: string;
++  content: string;
++  published: boolean;
++  authorId: number;
++  createdAt: Date;
++  updatedAt: Date;
++  slug: string;
++  excerpt?: string | null;
++  coverImage?: string | null;
++  author: {
++    id: number;
++    firstName: string;
++    lastName: string;
++    age: number;
++    bio: string | null;
++    website: string | null;
++    avatar: string | null;
++    createdAt: Date;
++    updatedAt: Date;
++  };
++  tags: {
++    id: number;
++    name: string;
++    slug: string;
++    createdAt: Date;
++    updatedAt: Date;
++  }[];
++};
++interface PostWithAuthor extends Omit<Post, 'author'> {
++  author: Author;
++}
++export async function getAllPosts(limit = 10, excerptWordLimit = 60): Promise<PostWithAuthor[]>{
+   const posts = await prisma.post.findMany({
+     take: limit,
+     orderBy: { createdAt: 'desc' },
+     include: { author: true },
+   })
+ 
+-  return posts.map(post => ({
++  return posts.map((post:PostWithAuthor) => ({
+     ...post,
++    author: {
++      id: post.author.id,
++      firstName: post.author.firstName,
++      lastName: post.author.lastName,
++      name: `${post.author.firstName} ${post.author.lastName}`,
++      age: post.author.age,
++      bio: post.author.bio,
++      website: post.author.website,
++      avatar: post.author.avatar,
++      createdAt: post.author.createdAt,
++      updatedAt: post.author.updatedAt,
++    },
+     excerpt: createExcerpt(post.content, excerptWordLimit),
+     slug: post.id.toString(),
+-  }))
++  }));
+ }
+ 
+ function createExcerpt(content: string, wordLimit: number): string {
+@@ -41,8 +86,7 @@ export async function createPost(data: {
+   }
+ 
+   const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+-
+-  return await prisma.post.create({
++  const createdPost = await prisma.post.create({
+     data: {
+       title,
+       content,
+@@ -57,8 +101,74 @@ export async function createPost(data: {
+     },
+     include: { author: true, tags: true },
+   })
++  const adaptedPost: Post = {
++    ...createdPost,
++    tags: createdPost.tags.map((prismatag : PrismaTag) => ({
++      ...prismatag,
++      posts: [],  
++      videos: []  
++    }))
++  }
++
++  return adaptedPost
+ }
++export async function updatePost(id: number, data: {
++  title: string;
++  content: string;
++  authorId: number;
++  published?: boolean;
++  excerpt?: string;
++  coverImage?: string | null;
++  tagIds?: number[];
++}): Promise<Post> {
++  const { title, content, authorId, published, excerpt, coverImage, tagIds } = data;
+ 
++  if (!title || !content || !authorId) {
++    throw new Error('Missing required fields');
++  }
++
++  const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
++
++  const updatedPost = await prisma.post.update({
++    where: { id },
++    data: {
++      title,
++      content,
++      authorId,
++      published: published || false,
++      excerpt: excerpt || content.substring(0, 150) + '...',
++      slug,
++      coverImage,
++      tags: tagIds ? {
++        set: tagIds.map(id => ({ id }))
++      } : undefined
++    },
++    include: { author: true, tags: true },
++  });
++
++  const adaptedPost: Post = {
++    ...updatedPost,
++    author: {
++      id: updatedPost.author.id,
++      firstName: updatedPost.author.firstName,
++      lastName: updatedPost.author.lastName,
++      name: `${updatedPost.author.firstName} ${updatedPost.author.lastName}`,
++      age: updatedPost.author.age,
++      bio: updatedPost.author.bio || '',
++      website: updatedPost.author.website,
++      avatar: updatedPost.author.avatar,
++      createdAt: updatedPost.author.createdAt,
++      updatedAt: updatedPost.author.updatedAt,
++    },
++    tags: updatedPost.tags.map((prismaTag: PrismaTag) => ({
++      ...prismaTag,
++      posts: [],
++      videos: []
++    }))
++  };
++
++  return adaptedPost;
++}
+ 
+ export async function getPostBySlug(slugOrId: string): Promise<Post | null> {
+   try {
+@@ -68,14 +178,7 @@ export async function getPostBySlug(slugOrId: string): Promise<Post | null> {
+         ? { id: parseInt(slugOrId) } 
+         : { slug: slugOrId },
+       include: {
+-        author: {
+-          select: {
+-            firstName: true,
+-            lastName: true,
+-            bio: true,
+-            avatar: true
+-          },
+-        },
++        author: true,
+         tags: true,
+       },
+     })
+@@ -84,35 +187,45 @@ export async function getPostBySlug(slugOrId: string): Promise<Post | null> {
+       console.log(`Post not found for slug/id: ${slugOrId}`);
+       return null;
+     }
++    const adaptedAuthor: Author = {
++      id: post.author.id,
++      firstName: post.author.firstName,
++      lastName: post.author.lastName,
++      name: `${post.author.firstName} ${post.author.lastName}`,
++      age: post.author.age,
++      bio: post.author.bio,
++      website: post.author.website,
++      avatar: post.author.avatar,
++      createdAt: post.author.createdAt,
++      updatedAt: post.author.updatedAt,
++    };
+ 
++    const adaptedTags: Tag[] = post.tags.map((prismaTag: PrismaTag) => ({
++      ...prismaTag,
++      posts: [],  
++      videos: []  
++    }));
++    
+     return {
+       ...post,
+-      author: {
+-        ...post.author,
+-        name: `${post.author.firstName} ${post.author.lastName}`,
+-      },
+-    }
++      author: adaptedAuthor,
++      tags: adaptedTags,
++    } as Post;
+   } catch (error) {
+     console.error('Error fetching post:', error)
+     return null
+   }
+ }
+-
+ export async function getPostsByTag(tagSlug: string): Promise<{ posts: Post[], tag: Tag | null }> {
++  console.log('Fetching posts for tag:', tagSlug);
+   try {
+-    const tag = await prisma.tag.findUnique({
++    const tagWithPosts = await prisma.tag.findUnique({
+       where: { slug: tagSlug },
+       include: {
+         posts: {
+           where: { published: true },
+           include: {
+-            author: {
+-              select: {
+-                firstName: true,
+-                lastName: true,
+-                avatar: true,
+-              },
+-            },
++            author: true,
+             tags: true,
+           },
+           orderBy: { createdAt: 'desc' },
+@@ -120,70 +233,90 @@ export async function getPostsByTag(tagSlug: string): Promise<{ posts: Post[], t
+         },
+       },
+     })
+-
+-    if (!tag) {
++    console.log('Tag found:', tagWithPosts ? tagWithPosts.name : 'Not found');
++    console.log('Number of posts:', tagWithPosts?.posts.length || 0);
++    if (!tagWithPosts) {
+       return { posts: [], tag: null }
+     }
+ 
+-    const posts = tag.posts.map(post => ({
+-      ...post,
++    const adaptedPosts: Post[] = tagWithPosts.posts.map((prismaPost: PrismaPostWithAuthorAndTags) => ({
++      ...prismaPost,
+       author: {
+-        ...post.author,
+-        name: `${post.author.firstName} ${post.author.lastName}`,
++        id: prismaPost.author.id,
++        firstName: prismaPost.author.firstName,
++        lastName: prismaPost.author.lastName,
++        name: `${prismaPost.author.firstName} ${prismaPost.author.lastName}`,
++        age: prismaPost.author.age,
++        bio: prismaPost.author.bio || '',
++        website: prismaPost.author.website,
++        avatar: prismaPost.author.avatar,
++        createdAt: prismaPost.author.createdAt,
++        updatedAt: prismaPost.author.updatedAt,
+       },
+-      excerpt: post.excerpt || post.content.substring(0, 150) + '...',
++      excerpt: prismaPost.excerpt || prismaPost.content.substring(0, 150) + '...',
++      tags: prismaPost.tags.map(tag => ({
++        ...tag,
++        posts: [],
++        videos: [],
++      })),
++      coverImage: prismaPost.coverImage || null, 
+     }))
+ 
+-    return { posts, tag }
++    const adaptedTag: Tag = {
++      ...tagWithPosts,
++      posts: [],
++      videos: [],
++    }
++    console.log('Adapted posts:', adaptedPosts.length);
++    return { posts: adaptedPosts, tag: adaptedTag }
+   } catch (error) {
+     console.error('Error fetching posts by tag:', error)
+     throw error
+   }
+ }
+ 
+-export async function getPostById(id: number) : Promise<Post | null> {
+-  return await prisma.post.findUnique({
+-    where: {id},
++
++
++export async function getPostById(id: number): Promise<Post | null> {
++  const post = await prisma.post.findUnique({
++    where: { id },
+     include: {
+       author: true,
+       tags: true,
+     }
+   })
+-}
+ 
+-export async function updatePost(id: number, data: {
+-  title: string;
+-  content: string;
+-  authorId: number;
+-  published?: boolean;
+-  excerpt?: string;
+-  coverImage?: string;
+-  tagIds?: number[];
+-}): Promise<Post> {
+-  const { title, content, authorId, published, excerpt, coverImage, tagIds } = data
++  if (!post) return null;
+ 
+-  if (!title || !content || !authorId) {
+-    throw new Error('Missing required fields')
+-  }
++  // Adapter l'objet author
++  const adaptedAuthor: Author = {
++    id: post.author.id,
++    firstName: post.author.firstName,
++    lastName: post.author.lastName,
++    name: `${post.author.firstName} ${post.author.lastName}`,
++    age: post.author.age,
++    bio: post.author.bio || '',
++    website: post.author.website,
++    avatar: post.author.avatar,
++    createdAt: post.author.createdAt,
++    updatedAt: post.author.updatedAt,
++  };
+ 
+-  const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
++  // Adapter les tags
++  const adaptedTags: Tag[] = post.tags.map(( prismaTag :PrismaTag ) => ({
++    ...prismaTag,
++    posts: [],  
++    videos: []  
++  }));
+ 
+-  return await prisma.post.update({
+-    where: { id },
+-    data: {
+-      title,
+-      content,
+-      authorId,
+-      published: published || false,
+-      excerpt: excerpt || content.substring(0, 150) + '...',
+-      slug,
+-      coverImage,
+-      tags: tagIds ? {
+-        set: tagIds.map(id => ({ id }))
+-      } : undefined
+-    },
+-    include: { author: true, tags: true },
+-  })
++  // Retourner le post avec l'auteur et les tags adaptés
++  const adaptedPost: Post = {
++    ...post,
++    author: adaptedAuthor,
++    tags: adaptedTags,
++  };
++
++  return adaptedPost;
+ }
+ 
+ export async function deletePost(id: number): Promise<void> {
+diff --git a/lib/prisma.ts b/lib/prisma.ts
+index f3ff888c..553b19ad 100755
+--- a/lib/prisma.ts
++++ b/lib/prisma.ts
+@@ -1,15 +1,17 @@
+ import { PrismaClient } from '@prisma/client'
+ 
+-let prisma: PrismaClient
+-
+-if (process.env.NODE_ENV === 'production') {
+-  prisma = new PrismaClient()
+-} else {
+-  if (!global.prisma) {
+-    global.prisma = new PrismaClient()
+-  }
+-  prisma = global.prisma
++const prismaClientSingleton = () => {
++  return new PrismaClient()
+ }
+ 
++type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>
++
++const globalForPrisma = globalThis as unknown as {
++  prisma: PrismaClientSingleton | undefined
++}
++
++const prisma = globalForPrisma.prisma ?? prismaClientSingleton()
++
+ export default prisma
+ 
++if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+\ No newline at end of file
+diff --git a/lib/serverActions.ts b/lib/serverActions.ts
+index 74aef1bc..9c605015 100755
+--- a/lib/serverActions.ts
++++ b/lib/serverActions.ts
+@@ -1,8 +1,7 @@
+ 'use server'
+ 
+-import { createPost } from '@/lib/posts';
+-import { updatePost } from '@/lib/posts';
+-import { FormState } from '@/types';
++import { createPost, deletePost , updatePost} from '@/lib/posts';
++import { FormState } from '@/app/types';
+ 
+ export async function handleCreatePost(prevState: FormState, formData: FormData): Promise<FormState> {
+   console.log("HandleCreatePost called", Object.fromEntries(formData));
+@@ -46,8 +45,8 @@ export async function handleCreatePost(prevState: FormState, formData: FormData)
+ export async function handleUpdatePost(prevState: FormState, formData: FormData): Promise<FormState> {
+   const id = formData.get('id') as string;
+   const title = formData.get('title') as string;
+-  const authorId = formData.get('authorId') as string;
+   const content = formData.get('content') as string;
++  const authorId = formData.get('authorId') as string;
+   const coverImage = formData.get('coverImage') as string;
+   const tagIds = formData.getAll('tagIds').map(id => parseInt(id as string));
+ 
+diff --git a/lib/tags.ts b/lib/tags.ts
+index ee6ef94a..f43ebe93 100755
+--- a/lib/tags.ts
++++ b/lib/tags.ts
+@@ -6,6 +6,10 @@ export async function getAllTags() {
+       id: true,
+       name: true,
+       slug: true,
++      posts: true,
++      videos: true,
++      createdAt: true, 
++      updatedAt: true, 
+       _count: {
+         select: { posts: true }
+       }
+@@ -16,4 +20,4 @@ export async function getAllTags() {
+     ...tag,
+     count: tag._count.posts
+   }))
+-}
+\ No newline at end of file
++}
+diff --git a/middleware.ts b/middleware.ts
+index 50be9e1f..e183591a 100755
+--- a/middleware.ts
++++ b/middleware.ts
+@@ -1,7 +1,7 @@
+-import { NextResponse } from 'next/server'
++import { NextResponse, NextRequest } from 'next/server'
+ import { getToken } from 'next-auth/jwt'
+ 
+-export async function middleware(req) {
++export async function middleware(req: NextRequest) {
+ 
+   if (req.nextUrl.pathname.startsWith('/api/auth')) {
+     return NextResponse.next()
+diff --git a/package-lock.json b/package-lock.json
+index 9c2e7ad7..feefec77 100755
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -18,6 +18,7 @@
+         "bcrypt": "^5.1.1",
+         "class-variance-authority": "^0.7.0",
+         "date-fns": "^2.30.0",
++        "disqus-react": "^1.1.5",
+         "dotenv": "^16.4.5",
+         "faker": "^5.5.3",
+         "gray-matter": "^4.0.3",
+diff --git a/prisma/seed.ts b/prisma/seed.ts
+deleted file mode 100755
+index ed6f530c..00000000
+--- a/prisma/seed.ts
++++ /dev/null
+@@ -1,44 +0,0 @@
+-const { PrismaClient } = require('@prisma/client');
+-const { hash } = require('bcrypt');
+-const prisma = new PrismaClient();
+-require('dotenv').config(); 
+-
+-async function main() {
+-  const adminPassword = await hash('admin123', 10);
+-  const userPassword = await hash('user123', 10);
+-
+-  await prisma.user.upsert({
+-    where: { email: 'admin@example.com' },
+-    update: {},
+-    create: {
+-      name: 'Admin User',
+-      email: 'admin@example.com',
+-      password: adminPassword,
+-      role: 'ADMIN',
+-      image: 'https://picsum.photos/200', 
+-    },
+-  });
+-
+-  await prisma.user.upsert({
+-    where: { email: 'user@example.com' },
+-    update: {},
+-    create: {
+-      name: 'Regular User',
+-      email: 'user@example.com',
+-      password: userPassword,
+-      role: 'USER',
+-      image: 'https://picsum.photos/201', 
+-    },
+-  });
+-
+-  console.log('Seed data created successfully');
+-}
+-
+-main()
+-  .catch((e) => {
+-    console.error(e);
+-    process.exit(1);
+-  })
+-  .finally(async () => {
+-    await prisma.$disconnect();
+-  });
+diff --git a/test-insert.ts b/test-insert.ts
+deleted file mode 100755
+index 09ff107c..00000000
+--- a/test-insert.ts
++++ /dev/null
+@@ -1,100 +0,0 @@
+-const { PrismaClient } = require('@prisma/client');
+-const { faker } = require('@faker-js/faker');
+-const slugify = require('slugify');
+-const { hash } = require('bcrypt');
+-
+-const prisma = new PrismaClient();
+-
+-require('dotenv').config();  // Charger les variables d'environnement
+-
+-async function main() {
+-  // Créer les utilisateurs admin et user
+-  const adminPassword = await hash('admin123', 10);
+-  const userPassword = await hash('user123', 10);
+-
+-  const adminUser = await prisma.user.upsert({
+-    where: { email: 'admin@example.com' },
+-    update: {},
+-    create: {
+-      name: 'Admin User',
+-      email: 'admin@example.com',
+-      password: adminPassword,
+-      role: 'ADMIN',
+-      image: 'https://picsum.photos/200',
+-    },
+-  });
+-
+-  const regularUser = await prisma.user.upsert({
+-    where: { email: 'user@example.com' },
+-    update: {},
+-    create: {
+-      name: 'Regular User',
+-      email: 'user@example.com',
+-      password: userPassword,
+-      role: 'USER',
+-      image: 'https://picsum.photos/201',
+-    },
+-  });
+-
+-  // Créer un auteur
+-  const author = await prisma.author.create({
+-    data: {
+-      firstName: faker.person.firstName(),
+-      lastName: faker.person.lastName(),
+-      name: faker.person.fullName(),
+-      age: faker.number.int({ min: 20, max: 80 }),
+-      bio: faker.lorem.paragraph(),
+-      website: faker.internet.url(),
+-      avatar: faker.image.avatar(),
+-    },
+-  });
+-
+-  // Créer quelques tags
+-  const tags = await Promise.all(
+-    Array.from({ length: 10 }, async () => {
+-      const name = faker.word.noun();
+-      return prisma.tag.create({
+-        data: {
+-          name,
+-          slug: slugify(name, { lower: true }),
+-        },
+-      });
+-    })
+-  );
+-
+-  // Créer des posts
+-  for (let i = 0; i < 50; i++) {
+-    const title = faker.lorem.sentence();
+-    const slug = slugify(title, { lower: true });
+-    const content = faker.lorem.paragraphs(5);
+-    const excerpt = content.split(' ').slice(0, 30).join(' ') + '...';
+-
+-    await prisma.post.create({
+-      data: {
+-        title,
+-        slug,
+-        content,
+-        excerpt,
+-        published: faker.datatype.boolean(),
+-        coverImage: faker.image.url(),
+-        author: {
+-          connect: { id: author.id },
+-        },
+-        tags: {
+-          connect: faker.helpers.arrayElements(tags, { min: 1, max: 3 }).map(tag => ({ id: tag.id })),
+-        },
+-      },
+-    });
+-  }
+-
+-  console.log('Seed data inserted successfully.');
+-}
+-
+-main()
+-  .catch((e) => {
+-    console.error(e);
+-    process.exit(1);
+-  })
+-  .finally(async () => {
+-    await prisma.$disconnect();
+-  });
