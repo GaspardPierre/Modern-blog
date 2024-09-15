@@ -11,14 +11,15 @@ import { Select } from '@/components/ui/select'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import SubmitButton from '@/components/SubmitButton'
 import { handleCreatePost } from '@/lib/serverActions'
-import { Author, Tag, FormState } from '@/types'
+import { Author, Tag, FormState } from '@/app/types'
+import { serialize } from 'next-mdx-remote/serialize';
+import MDXComponents from './MDXComponents'
+import { Check } from 'lucide-react'
 
 const MDXRemote = dynamic(() => import('next-mdx-remote').then(mod => mod.MDXRemote), {
   ssr: false,
 })
-const MDXComponents = dynamic(() => import('@/components/MDXComponents'), {
-  ssr: false,
-})
+
 
 interface NewPostFormProps {
   authors: Author[]
@@ -33,7 +34,7 @@ export default function NewPostForm({ authors, tags }: NewPostFormProps) {
   const [state, formAction] = useFormState(handleCreatePost, initialState)
   const [preview, setPreview] = useState(false)
   const router = useRouter()
-
+  const [mdxSource, setMdxSource] = useState<any>(null)
   useEffect(() => {
     if (state.message === 'Post créé avec succès') {
       setTimeout(() => {
@@ -41,6 +42,15 @@ export default function NewPostForm({ authors, tags }: NewPostFormProps) {
       }, 2000)
     }
   }, [state.message, router])
+
+  const handlePreviewToggle = async () => {
+    if (!preview) {
+      const content = (document.getElementById('content') as HTMLTextAreaElement)?.value || ''
+      const serializedContent = await serialize(content)
+      setMdxSource(serializedContent)
+    }
+    setPreview(!preview)
+  }
 
   return (
     <form action={formAction} className="space-y-4">
@@ -120,14 +130,16 @@ export default function NewPostForm({ authors, tags }: NewPostFormProps) {
       <div className="flex justify-between items-center">
         <Button
           type="button"
-          onClick={() => setPreview(!preview)}
+          onClick={handlePreviewToggle}
           variant="outline"
         >
           {preview ? 'Éditer' : 'Prévisualiser'}
         </Button>
-        <SubmitButton />
+        <SubmitButton icon={<Check className="h-4 w-4" />}>
+          Créer le post
+        </SubmitButton>
       </div>
-      {preview && (
+      {preview && mdxSource && (
         <div className="mt-8 prose">
           <h2>{(document.getElementById('title') as HTMLInputElement)?.value}</h2>
           {(document.getElementById('coverImage') as HTMLInputElement)?.value && (
@@ -138,16 +150,12 @@ export default function NewPostForm({ authors, tags }: NewPostFormProps) {
             />
           )}
           <MDXRemote 
-            source={(document.getElementById('content') as HTMLTextAreaElement)?.value} 
+            {...mdxSource}
             components={MDXComponents}
-            options={{
-              mdxOptions: {
-                development: process.env.NODE_ENV === 'development'
-              }
-            }}
           />
         </div>
       )}
     </form>
   )
 }
+     

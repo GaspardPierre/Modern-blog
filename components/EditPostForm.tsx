@@ -7,20 +7,25 @@ import dynamic from "next/dynamic";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import SubmitButton from "@/components/SubmitButton";
 import { handleUpdatePost } from "@/lib/serverActions";
-import { Author, Tag, FormState, Post } from "@/types";
+import { Author, Tag, FormState, Post } from "@/app/types"
 import { Check } from "lucide-react";
+import { serialize } from 'next-mdx-remote/serialize';
+import MDXComponents from "@/components/MDXComponents";
 
 const MDXRemote = dynamic(
   () => import("next-mdx-remote").then((mod) => mod.MDXRemote),
   { ssr: false }
 );
-const MDXComponents = dynamic(() => import("@/components/MDXComponents"), {
-  ssr: false,
-});
+
+
+interface EditPostFormProps {
+  post: Post;
+  authors: Author[];
+  tags: Tag[];
+}
 
 interface EditPostFormProps {
   post: Post;
@@ -39,6 +44,7 @@ export default function EditPostForm({
 }: EditPostFormProps) {
   const [state, formAction] = useFormState(handleUpdatePost, initialState);
   const [isPreview, setIsPreview] = useState(false);
+  const [mdxSource, setMdxSource] = useState<any>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -49,10 +55,14 @@ export default function EditPostForm({
     }
   }, [state.message, router]);
 
-  const togglePreview = () => {
+  const togglePreview = async () => {
+    if (!isPreview) {
+      const contentValue = (document.getElementById("content") as HTMLTextAreaElement)?.value || '';
+      const mdxSource = await serialize(contentValue);
+      setMdxSource(mdxSource);
+    }
     setIsPreview(!isPreview);
   };
-  console.log(MDXComponents);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -85,7 +95,7 @@ export default function EditPostForm({
           <p className="text-red-500 text-sm mt-1">{state.errors.title[0]}</p>
         )}
       </div>
-      {/* Autres champs du formulaire... */}
+ 
       <div>
         <label
           htmlFor="content"
@@ -115,7 +125,7 @@ export default function EditPostForm({
         </Button>
         <SubmitButton icon={<Check className="h-4 w-4" />}>Soumettre</SubmitButton>
       </div>
-      {isPreview && (
+      {isPreview && mdxSource && (
         <div className="mt-8 prose">
           <h2>
             {(document.getElementById("title") as HTMLInputElement)?.value}
@@ -131,20 +141,10 @@ export default function EditPostForm({
               className="w-full h-48 object-cover mb-4 rounded"
             />
           )}
-          {(() => {
-            const contentValue = (document.getElementById("content") as HTMLTextAreaElement)?.value || '';
-            return contentValue ? (
-              <MDXRemote
-                source={contentValue}
-                components={MDXComponents}
-                options={{
-                  mdxOptions: {
-                    development: process.env.NODE_ENV === "development",
-                  },
-                }}
-              />
-            ) : null;
-          })()}
+          <MDXRemote
+            {...mdxSource}
+            components={MDXComponents}
+          />
         </div>
       )}
     </form>

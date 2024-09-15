@@ -11,6 +11,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { LockIcon, MailIcon } from 'lucide-react'
+interface FormData {
+  email: string;
+  password: string;
+}
 
 const schema = yup.object({
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -20,18 +24,18 @@ const schema = yup.object({
 export default function LoginForm() {
   const router = useRouter()
   const [error, setError] = useState('')
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data : FormData) => {
     try {
       const result = await signIn("credentials", {
         redirect: false,
         email: data.email,
         password: data.password,
       })
-      console.log("SignIn result:", result) 
+      
       if (result?.error) {
         setError('Invalid email or password')
       } else {
@@ -39,7 +43,7 @@ export default function LoginForm() {
         const userResponse = await fetch('/api/user')
         if (userResponse.ok) {
           const userData = await userResponse.json()
-          console.log("User data:", userData) // Pour le débogage
+        
           // Rediriger en fonction du rôle de l'utilisateur
           if (userData.role === 'ADMIN') {
             router.push("/admin")

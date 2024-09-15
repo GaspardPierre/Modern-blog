@@ -9,8 +9,8 @@ import { Button } from './ui/button'
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const searchInputRef = useRef(null)
-  const searchContainerRef = useRef(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  const searchContainerRef = useRef<HTMLDivElement>(null)
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen)
@@ -22,8 +22,8 @@ export default function Header() {
   }, [isSearchOpen])
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
         setIsSearchOpen(false)
       }
     }

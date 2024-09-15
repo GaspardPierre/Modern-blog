@@ -6,15 +6,29 @@ import { useRouter } from 'next/navigation'
 import { Comment } from '@/app/types'
 import SubmitButton from '@/components/SubmitButton'
 
-
-
-interface CommentsProps {
-  postId: number
-  initialComments: Comment[]
+interface CommentWithUser {
+  id: number;
+  content: string;
+  createdAt: Date | string;
+  userId: string;
+  postId: number;
+  user: {
+    id: string;
+    name: string | null;
+    email: string | null;
+    emailVerified: Date | null;
+    image: string | null;
+    password: string | null;
+    role: string;
+  };
 }
 
-export default function Comments({ postId, initialComments }: CommentsProps) {
-  const [comments, setComments] = useState<Comment[]>(initialComments)
+interface CommentsComponentProps {
+  postId: number;
+  initialComments: CommentWithUser[];
+}
+export default function Comments({ postId, initialComments }: CommentsComponentProps ) {
+  const [comments, setComments] = useState<CommentWithUser[]>(initialComments)
   const [newComment, setNewComment] = useState('')
   const { data: session } = useSession()
   const router = useRouter()
