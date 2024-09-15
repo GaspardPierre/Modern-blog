@@ -4,6 +4,7 @@ import { getAllTags } from '@/lib/tags'
 import EditPostForm from '@/components/EditPostForm'
 import { Button } from '@/components/ui/button'
 import { handleDeletePost } from '@/lib/serverActions'
+import { serialize } from 'next-mdx-remote/serialize'
 
 export default async function EditPostPage({ params }: { params: { id: string } }) {
   const post = await getPostById(parseInt(params.id))
@@ -13,7 +14,7 @@ export default async function EditPostPage({ params }: { params: { id: string } 
   if (!post) {
     return <div>Post not found</div>
   }
-
+  const mdxSource = await serialize(post.content)
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Edit Post</h1>

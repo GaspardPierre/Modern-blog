@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation';
 import { CommentWithUser, getComments } from '@/lib/comments';
 import { Tag } from '@/app/types';
 import CommentsComponent from '@/components/CommentsComponent';
+import Tags from '@/components/ui/tag';
 
 interface Params {
   params: {
@@ -52,6 +53,7 @@ export default async function BlogPost({ params }: Params) {
     return (
     <article className="max-w-3xl mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-evently mb-8 space-y-4 md:space-y-0">
+      <Tags tags={post.tags} className="mr-3" />
         {post.tags && post.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mr-3">
             {post.tags.map(({ id, name, slug }: Tag) => (

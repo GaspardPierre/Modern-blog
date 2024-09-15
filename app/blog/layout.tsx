@@ -12,11 +12,11 @@ export default async function BlogLayout({
 
   return (
     <div className="flex flex-col md:flex-row">
-      <aside className="w-full md:w-1/5 md:min-w-[250px] mt-8 md:mt-0">
+      <aside className="w-full md:w-1/6 md:min-w-[250px] mt-8 md:mt-0">
         <TagCloud tags={tags} />
       </aside>
       <Separator />
-      <main className="flex-grow md:w-4/5 md:p-8">
+      <main className="flex-grow md:w-5/6 md:p-8">
         {children}
       </main>
     </div>

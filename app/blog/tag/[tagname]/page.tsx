@@ -4,6 +4,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostsByTag } from "@/lib/posts";
 import MDXComponents from "@/components/MDXComponents";
 import { notFound } from "next/navigation";
+import Tags from "@/components/ui/tag";
 
 interface Params {
   params: {
@@ -18,11 +19,9 @@ export async function generateMetadata({ params }: Params) {
 }
 
 export default async function TagPage({ params }: Params) {
-  console.log('Rendering tag page for:', params.tagname);
+ 
   const { posts, tag } = await getPostsByTag(params.tagname);
 
-  console.log('Tag:', tag?.name);
-  console.log('Number of posts:', posts.length);
   if (!tag) notFound();
 
   return (
@@ -46,6 +45,7 @@ export default async function TagPage({ params }: Params) {
               />
               <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
             </Link>
+            <Tags tags={post.tags} className="mb-2" />
             <div className="prose prose-sm max-w-none mb-2">
               {post.excerpt && (
                 <MDXRemote

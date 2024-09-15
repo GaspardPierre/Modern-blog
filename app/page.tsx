@@ -9,10 +9,10 @@ export default async function HomePage() {
 
   return (
     <>
-      <div className="md:w-3/4">
+      <div className="md:w-full">
         <h1 className="text-4xl font-bold mb-4">The Hotjar blog</h1>
         <p className="text-gray-600 mb-6">Société, Politique, Spiritualité, Poésie</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {posts.map((post, index) => (
             <article key={post.id} className={index === 0 ? "md:col-span-2" : ""}>
               <Link href={`/blog/${post.slug}`}>
