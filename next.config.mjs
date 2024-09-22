@@ -12,6 +12,7 @@ const withMDX = createMDX({
 const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is;
+  img-src * blob: data: http://152.42.130.234:8000 http://206.189.23.60; 
   style-src 'self' 'unsafe-inline';
   img-src * blob: data: http://152.42.130.234:8000; 
   media-src *.s3.amazonaws.com;
@@ -60,7 +61,7 @@ const nextConfig = {
     serverComponentsExternalPackages: ['@prisma/client'],
   },
   images: {
-    domains: ['c.disquscdn.com'],
+    domains: ['c.disquscdn.com','206.189.23.60'],
     remotePatterns: [
       {
         protocol: 'http',
