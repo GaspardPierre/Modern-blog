@@ -12,9 +12,10 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import SubmitButton from '@/components/SubmitButton'
 import { handleCreatePost } from '@/lib/serverActions'
 import { Author, Tag, FormState } from '@/app/types'
-import { serialize } from 'next-mdx-remote/serialize';
 import MDXComponents from './MDXComponents'
 import { Check } from 'lucide-react'
+import { SerializeOptions } from 'next-mdx-remote/dist/types'
+
 
 const MDXRemote = dynamic(() => import('next-mdx-remote').then(mod => mod.MDXRemote), {
   ssr: false,
@@ -29,7 +30,10 @@ interface NewPostFormProps {
 const initialState: FormState = {
   message: '',
 }
-
+const loadSerialize = async () => {
+  const { serialize } = await import('next-mdx-remote/serialize');
+  return serialize;
+};
 export default function NewPostForm({ authors, tags }: NewPostFormProps) {
   const [state, formAction] = useFormState(handleCreatePost, initialState)
   const [preview, setPreview] = useState(false)
@@ -46,6 +50,7 @@ export default function NewPostForm({ authors, tags }: NewPostFormProps) {
   const handlePreviewToggle = async () => {
     if (!preview) {
       const content = (document.getElementById('content') as HTMLTextAreaElement)?.value || ''
+      const serialize = await loadSerialize();
       const serializedContent = await serialize(content)
       setMdxSource(serializedContent)
     }
