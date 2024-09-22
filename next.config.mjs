@@ -74,12 +74,7 @@ const nextConfig = {
         port: '8000',
         pathname: '/uploads/**',
       },
-      {
-        protocol: 'https',
-        hostname: 'christweb.s3.eu-west-2.amazonaws.com',
-        port: '',
-        pathname: '**',
-      },
+   
       {
         protocol: 'https',
         hostname: 'cloudflare-ipfs.com',
@@ -91,6 +86,12 @@ const nextConfig = {
         hostname: 'dummyimage.com',
         port: '',
         pathname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '206.189.23.60',
+        port: '',
+        pathname: '/images/**',
       },
       {
         protocol: 'https',
