@@ -51,8 +51,8 @@ export default async function BlogPost({ params }: Params) {
   const readingTime = Math.ceil(post.content.split(' ').length / 200);
 
     return (
-    <article className="max-w-3xl mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-evently mb-8 space-y-4 md:space-y-0">
+    <article className="max-w-3xl mx-auto px-4 py-2">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-evently mb-2 space-y-4 md:space-y-0">
       <Tags tags={post.tags} className="mr-3" />
         {post.tags && post.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mr-3">
@@ -86,22 +86,23 @@ export default async function BlogPost({ params }: Params) {
           />
           <div>
             <p className="font-semibold text-gray-900">{post.author.name || 'Anonymous'}</p>
-            <p className="text-gray-600 text-sm">{post.author.bio || 'No bio available'}</p>
+      
           </div>
         </div>
       )}
 
       {post.coverImage && (
-        <Image
-          src={post.coverImage}
-          alt={post.title}
-          width={1200}
-          height={630}
-          className="w-full h-auto rounded-lg mb-8"
-        />
+       <Image
+       src={post.coverImage}
+       alt={post.title}
+       width={1200}
+       height={630}
+       layout="responsive"
+       className="rounded-lg"
+     />
       )}
 
-      <div className="prose prose-lg max-w-none mb-8">
+      <div className="prose prose-lg max-w-none mb-8 mt-8">
         <MDXRemote source={post.content} components={MDXComponents} />
       </div>
 
