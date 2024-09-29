@@ -136,4 +136,18 @@ export type PrismaTag = {
       coverImage?: string[];
     };
   }
- 
+
+
+export interface ArticleCardProps {
+  post: {
+    id: string | number;
+    slug: string;
+    title: string;
+    excerpt: string | null;
+    coverImage: string | null;
+    author: {
+      name: string;
+    };
+    createdAt: string | Date;
+  };
+}

@@ -1,77 +1,21 @@
-import Link from "next/link";
-import Image from "next/image";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import { getAllPosts } from "@/lib/posts";
-import MDXComponents from "@/components/MDXComponents";
+
+
+import { getAllPosts } from '@/lib/posts'
+import ArticleCard from '@/components/ArticleCard'
 
 export default async function BlogPage() {
-  const posts = await getAllPosts(10);
+  const posts = await getAllPosts(10) 
 
   return (
-    <>
-      <div className="md:w-3/4">
-        <h1 className="text-4xl font-bold mb-4">Latest</h1>
-        <p className="text-gray-600 mb-6">
-          Content for UX, product, and digital empathy experts
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {posts.map((post, index) => (
-            <article
-              key={post.id}
-              className={index === 0 ? "md:col-span-2" : ""}
-            >
-               {post.tags && post.tags.length > 0 && (
-    <div className="flex flex-wrap gap-2 mb-2">
-      {post.tags.map((tag) => (
-        <Link
-          key={tag.id}
-          href={`/blog/tag/${tag.slug}`}
-          className="px-2 py-1 bg-gray-200 text-sm rounded-full hover:bg-gray-300"
-        >
-          {tag.name}
-        </Link>
-      ))}
-    </div>
-  )}
-              <Link href={`/blog/${post.slug}`}>
-                <Image
-                  src={post.coverImage || "/placeholder.jpg"}
-                  alt={post.title}
-                  width={500}
-                  height={300}
-                  className="w-full h-48 object-cover mb-4 rounded"
-                />
-                <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
-              </Link>
-              <div className="prose prose-sm max-w-none mb-2">
-                {post.excerpt && (
-                  <MDXRemote
-                    source={post.excerpt}
-                    components={MDXComponents}
-                    options={{
-                      mdxOptions: {
-                        development: process.env.NODE_ENV === "development",
-                      },
-                    }}
-                  />
-                )}
-              </div>
-              <Link
-                href={`/blog/${post.slug}`}
-                className="text-blue-600 hover:underline"
-              >
-                Read more
-              </Link>
-            </article>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <section>
+        <h2 className="text-3xl font-bold mb-6">Tous les Articles</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {posts.map((post) => (
+            <ArticleCard key={post.id} post={{...post, id: post.id.toString()}} />
           ))}
         </div>
-      </div>
-
-      {/* Trending section */}
-      <section id="trending" className="mt-12">
-        <h2 className="text-2xl font-bold mb-4">TRENDING</h2>
-        {/* Ajoutez ici la section des articles tendance */}
       </section>
-    </>
-  );
+    </div>
+  )
 }

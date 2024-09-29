@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { CommentWithUser, getComments } from '@/lib/comments';
-import { Tag } from '@/app/types';
+
 import CommentsComponent from '@/components/CommentsComponent';
 import Tags from '@/components/ui/tag';
 
@@ -15,9 +15,6 @@ interface Params {
     slug: string;
   };
 }
-
-
-
 
 export async function generateMetadata({ params }: Params) {
   const post = await getPostBySlug(params.slug);
@@ -50,66 +47,55 @@ export default async function BlogPost({ params }: Params) {
 
   const readingTime = Math.ceil(post.content.split(' ').length / 200);
 
-    return (
-    <article className="max-w-3xl mx-auto px-4 py-2">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-evently mb-2 space-y-4 md:space-y-0">
-      <Tags tags={post.tags} className="mr-3" />
-        {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mr-3">
-            {post.tags.map(({ id, name, slug }: Tag) => (
-              <Link
-                key={id}
-                href={`/blog/tag/${slug}`}
-                className="px-3 py-1 bg-primary text-white rounded-full text-sm hover:bg-opacity-90 transition-colors"
-              >
-                {name}
-              </Link>
-            ))}
-          </div>
-        )}
+  return (
+    <article className="max-w-4xl mx-auto px-4 py-8">
+      {post.coverImage && (
+        <Image
+          src={post.coverImage}
+          alt={post.title}
+          width={1200}
+          height={400}
+          className="w-full h-[400px] object-cover rounded-lg mb-8"
+        />
+      )}
 
-        <div className="text-gray-600 text-sm">
-          {formatDate(post.createdAt)} · {readingTime} min read
+      <h1 className="text-4xl font-bold mb-4 text-gray-900">{post.title}</h1>
+
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          {post.author && (
+            <>
+              <Image
+                src={post.author.avatar || '/placeholder-avatar.png'}
+                alt={post.author.name || 'Author'}
+                width={40}
+                height={40}
+                className="rounded-full mr-3"
+              />
+              <span className="font-semibold text-gray-700 mr-2">{post.author.name || 'Anonymous'}</span>
+            </>
+          )}
+          <span className="text-gray-500">|</span>
+          <span className="ml-2 text-gray-500">{formatDate(post.createdAt)}</span>
         </div>
+        <span className="text-gray-500">{readingTime} min read</span>
       </div>
 
-      <h1 className="text-4xl font-bold mb-6 text-gray-900">{post.title}</h1>
-
-      {post.author && (
-        <div className="flex items-center mb-8">
-          <Image
-            src={post.author.avatar || '/placeholder-avatar.png'}
-            alt={post.author.name || 'Author'}
-            width={50}
-            height={50}
-            className="rounded-full mr-4"
-          />
-          <div>
-            <p className="font-semibold text-gray-900">{post.author.name || 'Anonymous'}</p>
-      
-          </div>
+      {post.tags && post.tags.length > 0 && (
+        <div className="mb-6">
+          <Tags tags={post.tags} />
         </div>
       )}
 
-      {post.coverImage && (
-       <Image
-       src={post.coverImage}
-       alt={post.title}
-       width={1200}
-       height={630}
-       layout="responsive"
-       className="rounded-lg"
-     />
-      )}
-
-      <div className="prose prose-lg max-w-none mb-8 mt-8">
+      <div className="prose prose-lg max-w-none mb-12">
         <MDXRemote source={post.content} components={MDXComponents} />
       </div>
 
-      <div className="border-t border-gray-200 pt-8">
+      <div className="border-t border-gray-200 pt-8 mb-8">
         <h2 className="text-2xl font-semibold mb-4 text-gray-900">Share this article</h2>
         {/* Ajoutez ici vos boutons de partage social */}
       </div>
+
       <CommentsComponent postId={post.id} initialComments={commentsWithPost} />
     </article>
   );

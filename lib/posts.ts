@@ -97,7 +97,7 @@ export async function createPost(data: {
       coverImage,
       tags: tagIds ? {
         connect: tagIds.map(id => ({ id }))
-      } : undefined
+      } : undefined,
     },
     include: { author: true, tags: true },
   })

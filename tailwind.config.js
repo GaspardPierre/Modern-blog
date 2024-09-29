@@ -6,6 +6,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        body: ['var(--font-inter)', 'sans-serif'],
+        title: ['var(--font-poppins)', 'sans-serif'],
+      },
       colors: {
         'primary': {
           50: '#e6f3f7',
