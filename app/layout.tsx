@@ -1,14 +1,25 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { Inter, Poppins } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Providers } from '@/components/Providers'
 import BackToTop from '@/components/BackToTop'
-const inter = Inter({ subsets: ['latin'] })
+
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
+
+const poppins = Poppins({
+  weight: ['400', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
+})
 
 export const metadata = {
   title: 'Holy Fire',
-  description: 'Stay informed with the latest investment news and analysis',
+  description: 'Un autre regard sur le monde',
 }
 
 export default function RootLayout({
@@ -18,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen flex flex-col bg-gray-light`}>
+      <body className={`${inter.variable} ${poppins.variable} min-h-screen flex flex-col bg-gray-light`}>
         <Providers>
           <Header />
           <div className="flex-grow container mx-auto px-4 py-8">
