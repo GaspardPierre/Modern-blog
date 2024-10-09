@@ -54,6 +54,7 @@ module.exports = {
         'gradient-1': '#1a5f7a',
         'gradient-2': '#159895',
         'gradient-3': '#57c5b6',
+        'gradient-4': ' #ffffff',
       },
     },
   },

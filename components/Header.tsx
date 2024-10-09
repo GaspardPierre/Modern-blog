@@ -42,7 +42,7 @@ export default function Header() {
   ]
 
   return (
-    <header className="bg-gradient-to-r from-gradient-1 to-gradient-2 shadow-sm sticky top-0 z-50">
+    <header className="bg-gradient-to-r from-gradient-1 from-10% via-gradient-4 via-20% to-gradient-2 to-90% shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
@@ -52,7 +52,7 @@ export default function Header() {
                 <input
                   ref={searchInputRef}
                   type="search"
-                  className="w-0 bg-white text-gray-900 rounded-full py-1 px-3 leading-tight focus:outline-none animate-expand"
+                  className="w-0 bg-white text-gray-900 rounded-full py-1 px-3 my-2 leading-tight focus:outline-none animate-expand"
                   placeholder="Search..."
                 />
               ) : (
