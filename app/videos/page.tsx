@@ -5,7 +5,7 @@ export default function LatestVideos() {
   return (
     <section className="bg-gray-100 py-12">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-2">Latest Videos</h2>
+        <h2 className="text-3xl font-bold mb-2">Nos dernières vidéos...</h2>
         <p className="text-gray-600 mb-8">Our latest videos from expert analysts around the world</p>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
@@ -22,7 +22,7 @@ export default function LatestVideos() {
                   <div className="w-0 h-0 border-t-8 border-b-8 border-l-12 border-transparent border-l-black ml-1"></div>
                 </div>
               </div>
-              <span className="absolute top-4 left-4 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">COMPANY INTERVIEWS</span>
+              <span className="absolute top-4 left-4 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">TEMOIGNAGES</span>
             </div>
           </div>
           <div className="space-y-4">
@@ -56,7 +56,7 @@ export default function LatestVideos() {
           </div>
         </div>
         <div className="text-right mt-8">
-          <a href="#" className="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded-full text-sm hover:bg-gray-300 transition">View all ›</a>
+          <a href="#" className="inline-block bg-gray-200 text-gray-800 px-4 py-2 rounded-full text-sm hover:bg-gray-300 transition">Tout voir ›</a>
         </div>
       </div>
     </section>

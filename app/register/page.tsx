@@ -48,7 +48,7 @@ export default function RegisterPage() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <h2 className="text-2xl font-bold text-center">Register</h2>
+        <h2 className="text-2xl font-bold text-center">S'inscrire</h2>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -92,7 +92,7 @@ export default function RegisterPage() {
       </CardContent>
       <CardFooter>
         <p className="text-sm text-center w-full">
-          Already have an account? <a href="/login" className="text-blue-500 hover:underline">Log in</a>
+          Déjà inscrit ? <a href="/login" className="text-blue-500 hover:underline">Connextez vous!</a>
         </p>
       </CardFooter>
     </Card>

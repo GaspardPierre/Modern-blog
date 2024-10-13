@@ -68,8 +68,8 @@ export default function LoginForm() {
   return (
     <Card className="w-full max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
       <CardHeader className="bg-primary text-white p-6 text-center">
-        <h2 className="text-2xl font-bold">Welcome Back</h2>
-        <p className="text-sm mt-2">Please sign in to your account</p>
+        <h2 className="text-2xl font-bold">Content de vous revoir !</h2>
+        <p className="text-sm mt-2">Connectez vous</p>
       </CardHeader>
       <CardContent className="p-6">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

@@ -39,6 +39,7 @@ export default function Header() {
     { label: 'Blog', href: '/blog' },
     { label: 'Videos', href: '/videos' },
     { label: 'About', href: '/about' },
+    { label: 'Auteurs', href: '/authors' },
   ]
 
   return (
