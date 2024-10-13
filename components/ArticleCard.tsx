@@ -20,7 +20,7 @@ interface ArticleCardProps {
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ post }) => {
   const coverImage = post.coverImage || "/placeholder-image.jpg";
-  const excerpt = post.œexcerpt || "Pas de description disponible";
+  const excerpt = post.excerpt || "Pas de description disponible";
   const createdAt = typeof post.createdAt === 'string' ? post.createdAt : post.createdAt.toISOString();
 
   return (
