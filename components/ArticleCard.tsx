@@ -39,7 +39,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ post }) => {
           className="w-full h-48 object-cover"
         />
         <div className="p-4">
-          <h3 className="text-xl font-semibold mb-2">{truncateTitle(post.title, 34)}</h3>
+        <h3 className="text-xl font-semibold mb-2 line-clamp-2 sm:line-clamp-none">{post.title}</h3>
           <div className="flex items-center text-sm text-gray-500 mb-2">
             <span className="mr-2">{post.author.name} |</span>
             <span>{formatDate(createdAt)}</span>

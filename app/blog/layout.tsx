@@ -1,6 +1,21 @@
 import TagCloud from '@/components/TagCloud'
 import { getAllTags } from '@/lib/tags'
 
+const MainContent = async ({ children }: { children: React.ReactNode }) => {
+  const tags = await getAllTags()
+
+  return (
+    <div className="flex flex-col w-full">
+      <main className="flex-grow md:w-3/4 md:p-8">
+        {children}
+      </main>
+      <aside className="w-full md:hidden mt-8">
+        <TagCloud tags={tags} isMainBlogPage={true} />
+      </aside>
+    </div>
+  )
+}
+
 export default async function BlogLayout({
   children,
 }: {
@@ -10,12 +25,10 @@ export default async function BlogLayout({
 
   return (
     <div className="flex flex-col md:flex-row">
-      <aside className="w-full md:w-1/4 md:min-w-[250px] mt-8 md:mt-0">
+      <aside className="hidden md:block w-1/4 md:min-w-[250px] mt-8 md:mt-0">
         <TagCloud tags={tags} isMainBlogPage={true} />
       </aside>
-      <main className="flex-grow md:w-3/4 md:p-8">
-        {children}
-      </main>
+      <MainContent>{children}</MainContent>
     </div>
   )
 }

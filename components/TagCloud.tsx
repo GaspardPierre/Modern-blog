@@ -34,15 +34,15 @@ export default function TagCloud({ tags, isMainBlogPage = false }: TagCloudProps
                 fontSize: isMainBlogPage ? `${getTagSize(tag.count || 0)}rem` : undefined,
               }}
             >
-              <span className={`relative z-10 text-text uppercase font-extrabold `}>
+              <span className={`relative z-10 text-text uppercase font-extrabold  `}>
                 {tag.name}
                 {isMainBlogPage && ` (${tag.count})`}
               </span>
               <span 
-                className="absolute inset-0 -skew-y-3 z-0 bg-teal-800 bg-opacity-20 group-hover:bg-opacity-30 transition-colors duration-200"
+                className="absolute inset-0 -skew-y-3 z-0 bg-teal-800 bg-opacity-20 group-hover:bg-opacity-30 transition-colors duration-200 "
                 style={{
                   borderRadius: '0.2em 1.2em',
-                  padding: '0.1em 0.9em',
+                  padding: '0.1em 0.5em',
                   margin: '0 -0.5em',
                 }}
               ></span>
