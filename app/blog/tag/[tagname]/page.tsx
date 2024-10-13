@@ -26,7 +26,7 @@ export default async function TagPage({ params }: { params: { tagname: string } 
 
   return (
     <div>
-      <h1>Articles tagged with "{tag.name}"</h1>
+      <h1>Articles classés  "{tag.name}"</h1>
       <div>
         {posts.map((post: Post) => (
           <ArticleCard key={post.id} post={formatPostForArticleCard(post)} />

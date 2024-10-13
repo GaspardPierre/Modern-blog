@@ -6,7 +6,7 @@ const MainContent = async ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="flex flex-col w-full">
-      <main className="flex-grow md:w-3/4 md:p-8">
+      <main className="flex-grow md:w-full md:p-8">
         {children}
       </main>
       <aside className="w-full md:hidden mt-8">
