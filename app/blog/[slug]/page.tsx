@@ -5,6 +5,7 @@ import { formatDate } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Clock } from 'lucide-react';
 import { CommentWithUser, getComments } from '@/lib/comments';
 
 import CommentsComponent from '@/components/CommentsComponent';
@@ -49,6 +50,7 @@ export default async function BlogPost({ params }: Params) {
 
   return (
     <article className="max-w-4xl mx-auto px-4 py-8">
+         <h1 className="text-4xl font-bold mb-4 text-gray-900">{post.title}</h1>
       {post.coverImage && (
         <Image
           src={post.coverImage}
@@ -59,7 +61,7 @@ export default async function BlogPost({ params }: Params) {
         />
       )}
 
-      <h1 className="text-4xl font-bold mb-4 text-gray-900">{post.title}</h1>
+   
 
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
@@ -71,8 +73,7 @@ export default async function BlogPost({ params }: Params) {
                 width={40}
                 height={40}
                 className="rounded-full mr-3"
-              />
-              <span className="font-semibold text-gray-700 mr-2">{post.author.name || 'Anonymous'}</span>
+              /> 
             </>
           )}
           <span className="text-gray-500">|</span>

@@ -1,4 +1,3 @@
-// components/ui/button.tsx
 import * as React from "react"
 import { VariantProps, cva } from "class-variance-authority"
 
@@ -17,6 +16,7 @@ const buttonVariants = cva(
         success: "bg-green-500 text-white hover:bg-green-600 focus:ring-green-300",
         warning: "bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-300",
         info: "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-300",
+        borderless: "bg-transparent text-primary-500 hover:bg-primary-50 focus:ring-primary-300 border-none shadow-none",
       },
       size: {
         default: "h-10 px-4 py-2",

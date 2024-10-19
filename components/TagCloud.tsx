@@ -18,7 +18,7 @@ export default function TagCloud({ tags, isMainBlogPage = false }: TagCloudProps
 
   return (
     <div className="bg-white rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-6 text-center">Mots-Clés Populaires</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Les sujets ...</h2>
       <div className="flex flex-wrap gap-4">
         {tags.map((tag) => (
           <Link
