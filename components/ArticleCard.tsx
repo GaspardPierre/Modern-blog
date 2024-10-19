@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Clock } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
+import { formatDate, truncatedText } from '@/lib/utils';
 
 interface ArticleCardProps {
   post: {
@@ -18,16 +18,20 @@ interface ArticleCardProps {
   };
 }
 
+
 const ArticleCard: React.FC<ArticleCardProps> = ({ post }) => {
   const coverImage = post.coverImage || "/placeholder-image.jpg";
   const excerpt = post.excerpt || "Pas de description disponible";
   const createdAt = typeof post.createdAt === 'string' ? post.createdAt : post.createdAt.toISOString();
+  const truncatedExcerpt = truncatedText(excerpt, 100);
+  const truncatedTitle = truncatedText(post.title, 25);
+  
 
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-sm transition-shadow hover:shadow-md">
       <div className="p-4">
         <Link href={`/blog/${post.slug}`}>
-          <h3 className="text-xl font-semibold mb-2 line-clamp-2 hover:text-primary transition-colors">{post.title}</h3>
+          <h3 className="text-xl text-black font-semibold mb-2 line-clamp-2 hover:text-primary transition-colors">{truncatedTitle}</h3>
         </Link>
         <div className="flex items-center text-sm text-gray-500 mb-4">
           <span className="mr-3">{post.author.name}</span>
@@ -53,9 +57,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ post }) => {
       </div>
       <div className="p-4">
         <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-          {excerpt}
+          {truncatedExcerpt}
         </p>
-        <Link href={`/blog/${post.slug}`} className="flex items-center text-primary hover:text-primary-dark transition-colors">
+        <Link href={`/blog/${post.slug}`} className="flex items-center text-black hover:text-primary-dark transition-colors">
           <span className="mr-2">Lire la suite</span>
           <ArrowRight size={18} />
         </Link>
