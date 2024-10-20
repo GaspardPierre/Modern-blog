@@ -46,7 +46,7 @@ export default function Header() {
     <header className="bg-gradient-to-r from-gradient-1 from-10% via-gradient-4 via-20% to-gradient-2 to-90% shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 ">
             <div className="text-2xl font-bold text-white">Holy Fire</div>
             <div ref={searchContainerRef} className="relative ">
               {isSearchOpen ? (
@@ -73,7 +73,7 @@ export default function Header() {
           </button>
 
           {/* Desktop navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center  space-x-6 ">
             <ul className="flex space-x-6 items-center">
               {navItems.map((item, index) => (
                 <li key={index}>

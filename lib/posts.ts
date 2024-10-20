@@ -1,6 +1,5 @@
-
 import prisma from './prisma'
-import { Post, Tag ,Author, PrismaTag} from '@/app/types'
+import { Post, Tag, Author, PrismaTag } from '@/app/types'
 
 type PrismaPostWithAuthorAndTags = {
   id: number;
@@ -32,17 +31,25 @@ type PrismaPostWithAuthorAndTags = {
     updatedAt: Date;
   }[];
 };
+
 interface PostWithAuthor extends Omit<Post, 'author'> {
   author: Author;
 }
-export async function getAllPosts(limit = 10, excerptWordLimit = 60): Promise<PostWithAuthor[]>{
-  const posts = await prisma.post.findMany({
-    take: limit,
-    orderBy: { createdAt: 'desc' },
-    include: { author: true },
-  })
 
-  return posts.map((post:PostWithAuthor) => ({
+export async function getAllPosts(page = 1, limit = 10, excerptWordLimit = 60): Promise<{ posts: PostWithAuthor[], totalPosts: number }> {
+  const skip =  Math.max(0, page - 1) * limit;
+  
+  const [posts, totalPosts] = await Promise.all([
+    prisma.post.findMany({
+      skip: skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: { author: true },
+    }),
+    prisma.post.count(),
+  ]);
+
+  const adaptedPosts = posts.map((post: PostWithAuthor) => ({
     ...post,
     author: {
       id: post.author.id,
@@ -59,7 +66,11 @@ export async function getAllPosts(limit = 10, excerptWordLimit = 60): Promise<Po
     excerpt: createExcerpt(post.content, excerptWordLimit),
     slug: post.id.toString(),
   }));
+
+  return { posts: adaptedPosts, totalPosts };
 }
+
+
 
 function createExcerpt(content: string, wordLimit: number): string {
   const words = content.split(/\s+/)
@@ -216,9 +227,11 @@ export async function getPostBySlug(slugOrId: string): Promise<Post | null> {
     return null
   }
 }
-export async function getPostsByTag(tagSlug: string): Promise<{ posts: Post[], tag: Tag | null }> {
-  console.log('Fetching posts for tag:', tagSlug);
+export async function getPostsByTag(tagSlug: string, page = 1, limit = 9): Promise<{ posts: Post[], tag: Tag | null, totalPosts: number }> {
+  console.log('Fetching posts for tag:', tagSlug, 'Page:', page, 'Limit:', limit);
   try {
+    const skip =  Math.max(0, page - 1) * limit;
+
     const tagWithPosts = await prisma.tag.findUnique({
       where: { slug: tagSlug },
       include: {
@@ -229,14 +242,20 @@ export async function getPostsByTag(tagSlug: string): Promise<{ posts: Post[], t
             tags: true,
           },
           orderBy: { createdAt: 'desc' },
-          take: 10,
+          skip: skip,
+          take: limit,
         },
+        _count: {
+          select: { posts: true }
+        }
       },
     })
+
     console.log('Tag found:', tagWithPosts ? tagWithPosts.name : 'Not found');
     console.log('Number of posts:', tagWithPosts?.posts.length || 0);
+
     if (!tagWithPosts) {
-      return { posts: [], tag: null }
+      return { posts: [], tag: null, totalPosts: 0 }
     }
 
     const adaptedPosts: Post[] = tagWithPosts.posts.map((prismaPost: PrismaPostWithAuthorAndTags) => ({
@@ -267,14 +286,20 @@ export async function getPostsByTag(tagSlug: string): Promise<{ posts: Post[], t
       posts: [],
       videos: [],
     }
+
     console.log('Adapted posts:', adaptedPosts.length);
-    return { posts: adaptedPosts, tag: adaptedTag }
+    console.log('Total posts for this tag:', tagWithPosts._count.posts);
+
+    return { 
+      posts: adaptedPosts, 
+      tag: adaptedTag, 
+      totalPosts: tagWithPosts._count.posts 
+    }
   } catch (error) {
     console.error('Error fetching posts by tag:', error)
     throw error
   }
 }
-
 
 
 export async function getPostById(id: number): Promise<Post | null> {
