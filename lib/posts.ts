@@ -230,7 +230,7 @@ export async function getPostBySlug(slugOrId: string): Promise<Post | null> {
 export async function getPostsByTag(tagSlug: string, page = 1, limit = 9): Promise<{ posts: Post[], tag: Tag | null, totalPosts: number }> {
   console.log('Fetching posts for tag:', tagSlug, 'Page:', page, 'Limit:', limit);
   try {
-    const skip =  Math.max(0, page - 1) * limit;
+    const skip = (page - 1) * limit;
 
     const tagWithPosts = await prisma.tag.findUnique({
       where: { slug: tagSlug },

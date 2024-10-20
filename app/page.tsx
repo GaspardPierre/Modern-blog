@@ -4,7 +4,7 @@ import ArticleCard from '@/components/ArticleCard';
 import TagCloud from '@/components/TagCloud'
 
 export default async function HomePage() {
-  const posts = await getAllPosts(6); // Récupère les 6 derniers posts
+  const { posts } = await getAllPosts(1, 10); // Récupère les 10 derniers posts de la première page
   const tags = await getAllTags();
 
   return (
