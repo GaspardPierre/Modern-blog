@@ -1,6 +1,6 @@
 import React from "react"
 import Link from "next/link"
-import { Tag } from "@/types"
+import { Tag } from "@/app/types/index"
 
 interface TagCloudProps {
   tags: Tag[]

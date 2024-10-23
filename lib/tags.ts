@@ -1,29 +1,39 @@
 import prisma from './prisma'
-import { Tag } from '@/types'
+import { Tag, Post } from '@/app/types/index'
 
 export async function getAllTags(): Promise<Tag[]> {
   try {
-    // Obtenir les tags avec le compte des posts publiés
     const tags = await prisma.tag.findMany({
       select: {
         id: true,
         name: true,
         slug: true,
+        createdAt: true,
+        updatedAt: true,
         _count: {
           select: {
             posts: {
               where: {
-                published: true // Ne compter que les posts publiés
+                published: true
               }
             }
           }
         },
         posts: {
           where: {
-            published: true // Ne prendre que les posts publiés
+            published: true
           },
           select: {
-            id: true
+            id: true,
+            title: true,
+            slug: true,
+            content: true,
+            excerpt: true,
+            published: true,
+            authorId: true,
+            coverImage: true,
+            createdAt: true,
+            updatedAt: true
           }
         }
       },
@@ -32,19 +42,17 @@ export async function getAllTags(): Promise<Tag[]> {
       }
     })
 
-    // Formater les données pour correspondre à notre type Tag
-    const formattedTags = tags.map(tag => ({
+    const formattedTags: Tag[] = tags.map(tag => ({
       id: tag.id,
       name: tag.name,
       slug: tag.slug,
       count: tag._count.posts,
-      posts: tag.posts,
-      createdAt: new Date(), // Ces champs sont requis par le type Tag
-      updatedAt: new Date(), // mais pas nécessaires pour l'affichage
-      videos: [] // Requis par le type Tag mais pas utilisé ici
+      posts: tag.posts as Post[],
+      videos: [], // Si vous n'utilisez pas les vidéos, vous pouvez laisser un tableau vide
+      createdAt: tag.createdAt,
+      updatedAt: tag.updatedAt
     }))
 
-    // Log pour debug
     console.log('Tags with counts:', formattedTags.map(tag => ({
       name: tag.name,
       slug: tag.slug,
