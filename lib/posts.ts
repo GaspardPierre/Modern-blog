@@ -227,10 +227,22 @@ export async function getPostBySlug(slugOrId: string): Promise<Post | null> {
     return null
   }
 }
-export async function getPostsByTag(tagSlug: string, page = 1, limit = 9): Promise<{ posts: Post[], tag: Tag | null, totalPosts: number }> {
+export async function getPostsByTag(tagSlug: string, page: number = 1, limit = 9): Promise<{ posts: Post[], tag: Tag | null, totalPosts: number }> {
   console.log('Fetching posts for tag:', tagSlug, 'Page:', page, 'Limit:', limit);
   try {
     const skip = (page - 1) * limit;
+
+    // Première requête pour obtenir le nombre total de posts publiés
+    const totalPublishedPosts = await prisma.post.count({
+      where: {
+        published: true,
+        tags: {
+          some: {
+            slug: tagSlug
+          }
+        }
+      }
+    });
 
     const tagWithPosts = await prisma.tag.findUnique({
       where: { slug: tagSlug },
@@ -246,7 +258,13 @@ export async function getPostsByTag(tagSlug: string, page = 1, limit = 9): Promi
           take: limit,
         },
         _count: {
-          select: { posts: true }
+          select: { 
+            posts: {
+              where: {
+                published: true
+              }
+            } 
+          }
         }
       },
     })
@@ -288,19 +306,18 @@ export async function getPostsByTag(tagSlug: string, page = 1, limit = 9): Promi
     }
 
     console.log('Adapted posts:', adaptedPosts.length);
-    console.log('Total posts for this tag:', tagWithPosts._count.posts);
+    console.log('Total published posts for this tag:', totalPublishedPosts);
 
     return { 
       posts: adaptedPosts, 
       tag: adaptedTag, 
-      totalPosts: tagWithPosts._count.posts 
+      totalPosts: totalPublishedPosts // Utilise le nombre exact de posts publiés
     }
   } catch (error) {
     console.error('Error fetching posts by tag:', error)
     throw error
   }
 }
-
 
 export async function getPostById(id: number): Promise<Post | null> {
   const post = await prisma.post.findUnique({

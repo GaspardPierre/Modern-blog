@@ -22,6 +22,8 @@ export default async function TagPage({
 
   const paginationInfo = getPaginationInfo(totalPosts, currentPage, POSTS_PER_PAGE);
 
+  console.log("paginationInfo", paginationInfo);
+
   const adaptPostForArticleCard = (post: Post) => ({
     id: post.id.toString(),
     slug: post.slug,
