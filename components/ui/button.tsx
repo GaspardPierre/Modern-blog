@@ -2,7 +2,7 @@ import * as React from "react"
 import { VariantProps, cva } from "class-variance-authority"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -11,12 +11,13 @@ const buttonVariants = cva(
         outline: "border border-primary-300 bg-transparent text-primary-500 hover:bg-primary-50 focus:ring-primary-300",
         secondary: "bg-secondary-500 text-white hover:bg-secondary-600 focus:ring-secondary-300",
         accent: "bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-300",
-        ghost: "bg-transparent text-primary-500 hover:bg-primary-50 focus:ring-primary-300",
-        link: "bg-transparent text-primary-500 underline-offset-4 hover:underline focus:ring-primary-300",
+        ghost: "bg-transparent text-primary-500 hover:bg-transparent  focus:ring-primary-300",
+        link: "bg-transparent text-black underline-offset-4 hover:underline focus:ring-white",
         success: "bg-green-500 text-white hover:bg-green-600 focus:ring-green-300",
         warning: "bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-300",
         info: "bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-300",
         borderless: "bg-transparent text-primary-500 hover:text-primary-600 hover:bg-transparent focus:ring-white  border-none shadow-none",
+        toc: "bg-transparent border-0 ring-0 text-gray-800 hover:text-gray-900 hover:font-bold hover:bg-transparent focus:ring-0 focus-outline-none text-left w-full p-0 h-auto",
       },
       size: {
         default: "h-10 px-4 py-2",

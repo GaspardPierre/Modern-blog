@@ -6,6 +6,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Clock } from 'lucide-react';
+import TableOfContents from '@/components/ui/TableOfContent';
+import { addIdsToHeadings } from '@/lib/markdown';
 import { CommentWithUser, getComments } from '@/lib/comments';
 
 import CommentsComponent from '@/components/CommentsComponent';
@@ -26,6 +28,8 @@ export async function generateMetadata({ params }: Params) {
 export default async function BlogPost({ params }: Params) {
   const post = await getPostBySlug(params.slug);
   if (!post) notFound();
+
+  const contentWithIds = addIdsToHeadings(post.content);
 
   const comments = await getComments(post.id);
   
@@ -49,6 +53,8 @@ export default async function BlogPost({ params }: Params) {
   const readingTime = Math.ceil(post.content.split(' ').length / 200);
 
   return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex flex-col lg:flex-row gap-8">
     <article className="max-w-4xl mx-auto px-4 py-8">
          <h1 className="text-4xl font-bold mb-4 text-gray-900">{post.title}</h1>
       {post.coverImage && (
@@ -99,5 +105,8 @@ export default async function BlogPost({ params }: Params) {
 
       <CommentsComponent postId={post.id} initialComments={commentsWithPost} />
     </article>
+    <TableOfContents content={post.content} />
+      </div>
+    </div>
   );
 }

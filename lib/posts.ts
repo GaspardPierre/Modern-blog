@@ -232,7 +232,7 @@ export async function getPostsByTag(tagSlug: string, page: number = 1, limit = 9
   try {
     const skip = (page - 1) * limit;
 
-    // Première requête pour obtenir le nombre total de posts publiés
+   
     const totalPublishedPosts = await prisma.post.count({
       where: {
         published: true,
