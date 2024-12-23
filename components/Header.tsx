@@ -43,11 +43,11 @@ export default function Header() {
   ]
 
   return (
-    <header className="bg-gradient-to-r from-gradient-1 from-10% via-gradient-4 via-20% to-gradient-2 to-90% shadow-sm sticky top-0 z-50">
+    <header className=" header font-title shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4 ">
-            <div className="text-2xl font-bold text-white">Holy Fire</div>
+            <div className="text-3xl font-bold text-white">Holy Fire</div>
             <div ref={searchContainerRef} className="relative ">
               {isSearchOpen ? (
                 <input
