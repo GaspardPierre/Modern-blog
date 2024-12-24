@@ -9,8 +9,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Source Sans Pro',...fontFamily.sans],
-        title: ['Montserrat', ...fontFamily.sans],
+        body: ['var(--font-roboto)', 'sans-serif'],
+        title: ['var(--font-lora)', 'serif'],
       },
       colors: {
         'primary': {

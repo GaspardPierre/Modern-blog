@@ -34,8 +34,12 @@ a {
 }
 
 .header a {
-  color: #FFFFFF; /* Couleur blanche pour les liens */
+  color: black; 
   transition: color 0.3s;
+}
+.header-desktop a {
+  color: #FFFFFF; 
+  transition: color 0.3s ease-in-out;
 }
 
 .header a:hover {
@@ -51,9 +55,6 @@ textarea {
   @apply w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
 }
 
-button {
-  @apply px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
-}
 
 /* Styles pour les articles de blog */
 .blog-content {

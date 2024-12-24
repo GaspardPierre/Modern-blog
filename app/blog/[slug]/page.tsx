@@ -56,7 +56,7 @@ export default async function BlogPost({ params }: Params) {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
     <article className="max-w-4xl mx-auto px-4 py-8">
-         <h1 className="text-4xl font-bold mb-4 text-gray-900">{post.title}</h1>
+         <h1 className="text-4xl font-title font-bold mb-4 text-gray-900">{post.title}</h1>
       {post.coverImage && (
         <Image
           src={post.coverImage}
@@ -83,9 +83,9 @@ export default async function BlogPost({ params }: Params) {
             </>
           )}
           <span className="text-gray-500">|</span>
-          <span className="ml-2 text-gray-500">{formatDate(post.createdAt)}</span>
+          <span className="ml-2 font-body text-gray-500">{formatDate(post.createdAt)}</span>
         </div>
-        <span className="text-gray-500">{readingTime} min read</span>
+        <span className="text-gray-500 font-body">{readingTime} min read</span>
       </div>
 
       {post.tags && post.tags.length > 0 && (
@@ -94,12 +94,12 @@ export default async function BlogPost({ params }: Params) {
         </div>
       )}
 
-      <div className="prose prose-lg max-w-none mb-12">
+      <div className="prose prose-lg max-w-none mb-12 font-body">
         <MDXRemote source={post.content} components={MDXComponents} />
       </div>
 
       <div className="border-t border-gray-200 pt-8 mb-8">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-900">Share this article</h2>
+        <h2 className="text-2xl font-semibold font-title mb-4 text-gray-900">Share this article</h2>
         {/* Ajoutez ici vos boutons de partage social */}
       </div>
 

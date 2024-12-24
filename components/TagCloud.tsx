@@ -21,7 +21,7 @@ export default function TagCloud({ tags, isMainBlogPage = false }: TagCloudProps
 
   return (
     <div className="bg-white rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-6 text-center">Les sujets...</h2>
+      <h2 className="text-2xl font-bold mb-6 font-title text-center">Les sujets...</h2>
       <div className="flex flex-wrap gap-4">
         {activeTags.map((tag) => (
           <Link
@@ -37,7 +37,7 @@ export default function TagCloud({ tags, isMainBlogPage = false }: TagCloudProps
                 fontSize: isMainBlogPage ? `${getTagSize(tag.count || 0)}rem` : undefined,
               }}
             >
-              <span className="relative z-10 text-text uppercase font-extrabold">
+              <span className="relative z-10 text-text uppercase  font-body font-extrabold">
                 {tag.name}
                 {isMainBlogPage && ` (${tag.count})`}
               </span>

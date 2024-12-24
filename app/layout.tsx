@@ -1,20 +1,22 @@
 import './globals.css'
-import { Inter, Poppins } from 'next/font/google'
+import { Lora, Roboto } from 'next/font/google'
+
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { Providers } from '@/components/Providers'
 import BackToTop from '@/components/BackToTop'
 
 
-const inter = Inter({ 
+const roboto = Roboto({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-roboto',
+  weight: ['400', '700'], // Gras pour les sous-titres ou descriptions
 })
 
-const poppins = Poppins({
-  weight: ['400', '600', '700'],
+const lora = Lora({
   subsets: ['latin'],
-  variable: '--font-poppins',
+  variable: '--font-lora',
+  weight: ['400', '700'], // Gras pour les titres
 })
 
 export const metadata = {
@@ -29,7 +31,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${poppins.variable} min-h-screen flex flex-col bg-gray-light`}>
+      <body className={`${roboto.variable} ${lora.variable} min-h-screen flex flex-col bg-gray-light`}>
         <Providers>
           <Header />
           <div className="flex-grow container mx-auto px-4 py-8">
